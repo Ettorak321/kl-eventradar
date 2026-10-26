@@ -1,0 +1,50 @@
+name: KL EventRadar Daten aktualisieren
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kl-eventradar-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Abhängigkeiten
+        run: pip install -r scripts/requirements.txt
+
+      - name: Python Regressionstests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+
+      - name: Node Regressionstests
+        run: node --test tests/test_ics.cjs
+
+      - name: Quellen abgleichen
+        run: python scripts/fetch_events.py
+
+      - name: Veränderte Cache- und Eventdaten committen
+        run: |
+          git config user.name "kl-eventradar-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/events.json data/source_status.json data/cache/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: Quellen aktualisieren"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
