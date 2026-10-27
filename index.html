@@ -26,7 +26,7 @@
     <div class="category-panel">
       <p class="picker-hint">Mehrfachauswahl: Nur angehakte Veranstaltungstypen werden angezeigt.</p>
       <div class="category-presets">
-        <button type="button" class="mini-button" id="categories-relevant">Für Getränkedisposition</button>
+        <button type="button" class="mini-button" id="categories-relevant">Häufige Kategorien</button>
         <button type="button" class="mini-button" id="categories-all">Alle</button>
         <button type="button" class="mini-button" id="categories-none">Keine</button>
       </div>
@@ -46,7 +46,7 @@
   <label class="sr-only" for="filter-location">Veranstaltungsort</label><select id="filter-location"><option value="all">Alle Orte</option></select>
   <label class="checkbox-label"><input id="filter-stadium" type="checkbox"> Nur Stadion</label>
   <label class="checkbox-label"><input id="filter-major" type="checkbox"> Nur große Events</label>
-  <label class="checkbox-label"><input id="filter-kerwe" type="checkbox"> Nur Kerwen</label>
+  <label class="checkbox-label"><input id="filter-kerwe" type="checkbox"> Nur Kerwen</label><select id="filter-forecast" aria-label="Terminstatus"><option value="all">Veröffentlicht + Vorschau</option><option value="confirmed">Nur veröffentlichte Termine</option><option value="forecast">Nur Kerwe-Prognosen</option></select>
   <label class="sr-only" for="filter-source">Datenquelle</label><select id="filter-source"><option value="all">Alle Datenquellen</option></select>
   <div class="view-switch" role="group" aria-label="Kalenderansicht"><button type="button" class="btn btn-sm active" data-view="dayGridMonth">Monat</button><button type="button" class="btn btn-sm btn-outline" data-view="timeGridWeek">Woche</button><button type="button" class="btn btn-sm btn-outline" data-view="listMonth">Liste</button></div>
 </nav>
@@ -54,7 +54,7 @@
   <aside class="sidebar">
     <h2>Anzeige</h2><p id="filter-count" class="filter-count" aria-live="polite">Termine werden geladen …</p>
     <h2 class="sources-heading">Veranstaltungsarten & Farben</h2><div id="type-legend" class="type-legend"></div>
-    <h2 class="sources-heading">Nächste Termine</h2><ul class="upcoming-list" id="upcoming-list"><li>Daten werden geladen …</li></ul>
+    <p id="forecast-summary" class="forecast-summary">Kerwe-Vorschauen werden geladen …</p><h2 class="sources-heading">Nächste Termine</h2><ul class="upcoming-list" id="upcoming-list"><li>Daten werden geladen …</li></ul>
     <h2 class="sources-heading">Regionen & Farben</h2><div id="region-legend" class="region-legend" aria-label="Farblegende"></div>
     <p class="legend-note">Die <strong>Terminfarbe</strong> zeigt die Art (z. B. Rot = bestätigtes FCK-Heimspiel, Orange = Kerwe). Der kleine farbige Punkt zeigt die <strong>Region</strong>. Die Datenquelle ist separat im Detailfenster ersichtlich.</p>
     <h2 class="sources-heading">Datenquellen</h2><div id="source-status" aria-live="polite"><p class="muted">Noch keine Aktualisierung</p></div>
@@ -89,6 +89,6 @@
     </form>
   </div>
 </div>
-<footer class="app-footer">Stadt Kaiserslautern (kreisfrei) + alle sechs Verbandsgemeinden des Landkreises. Kategorien sind individuell mehrfach auswählbar; Kultur, Museen und Ausstellungen sind standardmäßig ausgeblendet. Kein Anspruch auf Vollständigkeit; Kommunalquellen können zeitweise fehlen. Nur öffentlich veröffentlichte Termine. <strong>Kein vollständiger Belegungsplan</strong> des Fritz-Walter-Stadions. Fehlende Einträge bedeuten nicht, dass das Stadion frei ist. Private Termine werden ausschließlich in diesem Browser gespeichert. Drittanbieter-Kalenderbibliothek benötigt beim ersten Öffnen Internetzugang.</footer>
+<footer class="app-footer">Stadt Kaiserslautern (kreisfrei) + alle sechs Verbandsgemeinden des Landkreises. Kategorien sind individuell mehrfach auswählbar; Kultur, Museen und Ausstellungen sind standardmäßig ausgeblendet. Kein Anspruch auf Vollständigkeit; Kommunalquellen können zeitweise fehlen. Öffentliche Termine und ausdrücklich gekennzeichnete Kerwe-Prognosen. <strong>Kein vollständiger Belegungsplan</strong> des Fritz-Walter-Stadions. Fehlende Einträge bedeuten nicht, dass das Stadion frei ist. Private Termine werden ausschließlich in diesem Browser gespeichert. Drittanbieter-Kalenderbibliothek benötigt beim ersten Öffnen Internetzugang.</footer>
 </body>
 </html>
