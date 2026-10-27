@@ -27,7 +27,6 @@ concurrency:
 
 jobs:
   update:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 12
 
@@ -52,9 +51,11 @@ jobs:
         run: node --check js/app.js
 
       - name: Quellen abgleichen
+        if: github.event_name != 'pull_request'
         run: python scripts/fetch_events.py
 
       - name: Veränderte Cache- und Eventdaten committen
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "kl-eventradar-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
