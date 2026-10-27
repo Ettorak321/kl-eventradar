@@ -45,3 +45,9 @@ Kerwe-Vorschauen sind historisch abgeleitet und können falsch sein; maßgeblich
 - `js/app.js`, `js/taxonomy.js`, `css/style.css`, `index.html`: Kalenderdarstellung
 - `tests/`: Regressionstests
 - `.github/workflows/update-events.yml`: Tests und Aktualisierung
+
+## FCK-Auswärtsspiele (V7)
+
+Der Profi-Kalender importiert nun Heimspiele (rot, nur mit nachgewiesenem Fritz-Walter-Stadion) und eindeutige FCK-Auswärtsspiele (kupferfarben). Auswärtsspiele werden niemals als lokale Stadionbelegung behandelt und können getrennt gefiltert werden. Der Spielort außerhalb des Landkreises ist eine Information zur Begegnung, kein regionaler Veranstaltungsort. Ob ein Lokal die Übertragung zeigt, wird nicht behauptet.
+
+**Datenstand prüfen** lädt die bereits veröffentlichte `events.json` erneut. **Quellenabruf starten** öffnet den GitHub-Actions-Workflow; dort können angemeldete Berechtigte mit „Run workflow“ einen neuen Abruf auslösen. Eine öffentliche GitHub-Pages-Seite darf nicht ohne Authentisierung Schreibaktionen ausführen. Automatische Abrufe laufen weiterhin ungefähr alle sechs Stunden.

@@ -39,3 +39,5 @@
 @media(max-width:650px){.category-picker{width:100%}.category-panel{width:100%;max-width:100%}.filter-bar #filter-source{width:100%}}
 
 .fc .fc-event.kl-forecast,.fc .fc-daygrid-event.kl-forecast{border-style:dashed!important;border-width:2px!important;opacity:.82}.kl-forecast-tag,.forecast-tag{display:inline-block;background:#6a5127;color:#fff2cd;border:1px dashed #eac47c;border-radius:4px;padding:1px 5px;font-size:10px;font-weight:800}.forecast-tag{margin:5px 0}.forecast-summary{color:#f7dca3;background:#302b25;border:1px dashed #ab8449;border-radius:8px;padding:9px 11px;font-size:12px}.forecast-evidence{display:flex;flex-direction:column;gap:7px;margin-top:18px}
+
+#btn-fetch-sources{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}#btn-fetch-sources:hover{color:white}#refresh-feedback{font-size:12px;line-height:1.5;margin:10px 0}
