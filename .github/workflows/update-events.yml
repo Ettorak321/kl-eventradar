@@ -3,6 +3,19 @@ name: KL EventRadar Daten aktualisieren
 on:
   schedule:
     - cron: '17 */6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'css/**'
+      - 'js/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'data/kerwe_rules.json'
+      - '.github/workflows/update-events.yml'
+      - 'README.md'
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -14,6 +27,7 @@ concurrency:
 
 jobs:
   update:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 12
 
@@ -33,7 +47,9 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_*.py' -v
 
       - name: Node Regressionstests
-        run: node --test tests/test_ics.cjs
+        run: node --test tests/*.cjs
+      - name: Syntax prüfen
+        run: node --check js/app.js
 
       - name: Quellen abgleichen
         run: python scripts/fetch_events.py
