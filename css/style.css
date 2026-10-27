@@ -4,3 +4,36 @@
 /* V4: Regionen-Farben + klar erkennbarer Veranstaltungstyp */
 .region-legend{display:grid;grid-template-columns:1fr;gap:5px}.region-legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:#dce0ec;padding:3px 0}.legend-swatch{width:10px;height:10px;flex:0 0 10px;border-radius:3px}.legend-note{color:var(--muted);font-size:11px;line-height:1.45;margin:10px 0}.upcoming-type{display:block;font-weight:700;font-size:11px;color:#bfc9e3;line-height:1.5;margin:4px 0}.kl-calendar-event{display:flex;align-items:center;gap:5px;width:100%;min-width:0;white-space:nowrap;overflow:hidden}.kl-type-chip{display:inline-block;border-radius:3px;background:#0005;padding:0 4px;font-weight:750;font-size:10px;flex:0 0 auto}.kl-event-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fc .fc-daygrid-event,.fc .fc-timegrid-event{border-radius:4px}.fc .fc-list-event .kl-calendar-event{white-space:normal}.fc .fc-list-event .kl-event-name{white-space:normal}.fc .fc-event{font-weight:600}
 .region-legend-item .legend-count{font-size:10px;color:var(--muted);margin-left:auto;text-align:right;white-space:nowrap;padding-left:4px}
+
+/* V5: Veranstaltungstyp = Kartenfarbe; Region = separater kleiner Marker. */
+.category-picker{position:relative;min-width:228px;flex:0 0 auto;color:var(--text)}
+.category-picker>summary{list-style:none;cursor:pointer;padding:9px 12px;border:1px solid #4e596a;background:#252c3b;border-radius:8px;font-size:13px;font-weight:700}
+.category-picker>summary::-webkit-details-marker{display:none}
+.category-picker>summary:after{content:' ▾';color:#d7dee9}
+.category-panel{position:absolute;top:calc(100% + 5px);left:0;width:min(355px,90vw);z-index:45;background:#212734;border:1px solid #566174;box-shadow:0 14px 30px #0008;border-radius:10px;padding:13px}
+.picker-hint{font-size:12px;color:#c7ced8;margin:0 0 10px;line-height:1.45}
+.category-presets{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 9px}
+.mini-button{font-size:11px;font-weight:700;padding:6px 8px;border:1px solid #637189;border-radius:6px;background:#303849;color:#fff;cursor:pointer}
+.mini-button:hover{background:#46536a}
+.category-choices{display:grid;grid-template-columns:1fr;gap:2px;max-height:310px;overflow-y:auto}
+.category-check{display:flex;align-items:center;gap:9px;font-size:13px;cursor:pointer;padding:7px 5px;border-radius:5px}
+.category-check:hover{background:#374154}.category-check input{accent-color:#dc544e;width:16px;height:16px}
+.type-legend{display:grid;gap:7px}.type-legend-item{display:flex;align-items:center;gap:8px;color:var(--text);font-size:12px}
+.filter-count{font-size:13px;font-weight:700;color:#dbe4f4;padding:9px 11px;background:#272f3e;border-radius:7px;margin:2px 0}
+.region-dot{display:inline-block;vertical-align:middle;width:9px;height:9px;min-width:9px;flex:0 0 9px;border-radius:99px;border:1px solid #fff9;box-shadow:0 0 0 1px #0004}
+.kl-calendar-event{gap:6px;color:#fff}.kl-event-name{flex:1;min-width:0}
+.kl-type-chip{background:#0006;border-radius:3px;padding:1px 5px;font-size:10px;color:#fff}
+.fc .fc-daygrid-event.kl-event-card,.fc .fc-timegrid-event.kl-event-card,
+.fc .fc-daygrid-block-event.kl-event-card,.fc .fc-h-event.kl-event-card{
+ background-color:var(--kl-event-color,#697586)!important;border-color:var(--kl-event-color,#697586)!important;color:#fff!important;
+}
+.fc .fc-daygrid-dot-event.kl-event-card{padding:3px 5px;}
+.fc .fc-daygrid-dot-event.kl-event-card .fc-event-title{color:#fff!important}
+.fc .fc-event.kl-event-card .fc-event-main,.fc .fc-event.kl-event-card .fc-event-main-frame{color:#fff!important}
+.fc .fc-list-event.kl-event-card td.fc-list-event-title{border-left:5px solid var(--kl-event-color,#697586)!important}
+.fc .fc-list-event.kl-event-card .fc-list-event-dot{border-color:var(--kl-event-color,#697586)!important}
+.fc .fc-list-event.kl-event-card .kl-type-chip{background:var(--kl-event-color,#697586)!important;color:#fff}
+.fc .fc-list-event.kl-event-card .kl-event-name{color:var(--text)}
+.fc .fc-list-event.kl-event-card:hover td{background-color:var(--panel2)}
+.fc .fc-daygrid-event.kl-event-card .region-dot,.fc .fc-timegrid-event.kl-event-card .region-dot{margin-left:auto}
+@media(max-width:650px){.category-picker{width:100%}.category-panel{width:100%;max-width:100%}.filter-bar #filter-source{width:100%}}

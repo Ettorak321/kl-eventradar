@@ -1,4 +1,4 @@
-# KL EventRadar V4 – Stadt + ganzer Landkreis Kaiserslautern
+# KL EventRadar V5 – Getränkedisposition Stadt + Landkreis Kaiserslautern
 
 **Zweck:** öffentlich veröffentlichte FCK-Heimspiele, Kerwen, Stadtfeste, Konzerte und weitere Termine als Orientierung für die Getränkedisposition. **Kein garantiert vollständiger Veranstaltungskalender und keine automatische Absatzprognose.** Eine Veranstaltung kann fehlen, wenn sie nicht veröffentlicht wird, eine Ortsangabe fehlt oder eine Quelle ausfällt.
 
@@ -6,7 +6,7 @@
 
 Die **kreisfreie Stadt Kaiserslautern** plus alle sechs Verbandsgemeinden im Landkreis Kaiserslautern:
 
-| Gebiet | Kalenderfarbe (außer FCK) | Beispiele |
+| Gebiet | Region-Marker (kleiner Punkt) | Beispiele |
 | --- | --- | --- |
 | Stadt Kaiserslautern | Lila | Kaiserslautern, Hohenecken, Siegelbach |
 | VG Bruchmühlbach-Miesau | Ocker | Bruchmühlbach-Miesau, Lambsborn, Martinshöhe |
@@ -16,11 +16,41 @@ Die **kreisfreie Stadt Kaiserslautern** plus alle sechs Verbandsgemeinden im Lan
 | VG Ramstein-Miesenbach | Grün | Ramstein, Hütschenhausen, Steinwenden, Niedermohr |
 | VG Weilerbach | Orange | Weilerbach, Rodenbach, Mackenbach, Schwedelbach |
 
-**FCK-Heimspiele im Fritz-Walter-Stadion sind immer ROT**, unabhängig von der geografischen Stadtfarbe. Veranstaltungstypen stehen als kurze Textkennzeichnung direkt im Kalendereintrag, z. B. **„Kerwe“** oder **„FCK-Heimspiel“**. In der Seitenleiste sind die Farben und die Zahl der gefundenen Einträge je Region sichtbar. Filter: Region, Veranstaltungsort, Typ, „Nur Kerwen“, „Nur Stadion“, „Nur große Events“, Suchfeld. Die exakte Ortsgemeinde steht nach Möglichkeit im Detailfenster.
+## Filter und Farblogik (Version 5)
+
+**Entscheidende Änderung:** Die **Farbe der Veranstaltung im Kalender** zeigt jetzt die **Veranstaltungsart**. Die **Region** wird als kleiner farbiger Punkt am Kalendereintrag angezeigt; die **Datenquelle** ist separat in der Detailansicht nachvollziehbar. Ein Veranstaltungseintrag aus einer städtischen Website wird nicht allein deshalb der Stadt zugeordnet.
+
+| Farbe der Kalenderkarte | Art | Standardmäßig sichtbar? |
+| --- | --- | --- |
+| Rot | **Nur nachgewiesene FCK-Heimspiele im Fritz-Walter-Stadion** | Ja |
+| Orange | Kerwen / Kirmes | Ja |
+| Ocker | Stadt-, Dorf- und Vereinsfeste | Ja |
+| Blau | Konzerte / Musik | Ja |
+| Türkis | Sonstige Sportveranstaltungen | Ja |
+| Grün | Märkte / Messen | Ja |
+| Helles Violett | Ausstellungen | Nein |
+| Grauviolett | Museumstermine | Nein |
+| Violett | Kultur / Theater | Nein |
+| Grau | Sonstiges | Nein |
+
+Oben in **„Veranstaltungsarten: 6 von 10“** lässt sich jede Kategorie einzeln **an- oder abwählen**. Mehrere Kategorien können gleichzeitig aktiv sein. **„Für Getränkedisposition“** setzt die sechs üblichen Kategorien; **„Alle“** zeigt auch Museum/Kultur/Ausstellung; **„Keine“** leert die Auswahl. Die Auswahl bleibt im Browser gespeichert. Daneben können Region, Ort, Datenquelle, Kerwe, Stadion und Großveranstaltungen weiter gefiltert werden. Die Sidebar zeigt „X von Y Terminen“; Such- und ICS-Export übernehmen die Filter.
+
+**Hinweis zur Datenqualität:** V5 korrigiert bekannte Fehlzuordnungen bei unklaren Ortsangaben (z. B. „Platz unter den Linden“ ist kein belastbarer Nachweis für die Ortsgemeinde Linden; eine Busabfahrt außerhalb des Landkreises zum Pfalztheater ist kein Vor-Ort-Termin). Allein aus Texten lässt sich die geografische Zuordnung trotzdem nicht in jedem Fall sicher beweisen.
 
 Die vollständige verwaltungsrechtliche Liste der Ortsgemeinden und Ortsteile ist in `scripts/regions.py` hinterlegt. Referenz: https://www.kaiserslautern-kreis.de/landkreis/gemeinden-und-buergermeister/ortsgemeinden/ . Die Zuordnung erfolgt **über Wort- und Ortsnamenvergleich**, nicht über Geocoding: gleichnamige Orte in anderen Landkreisen oder fehlende Ortsangaben können zu Fehlern bzw. ausgelassenen Terminen führen. Quelle vor einer Dispositionsentscheidung öffnen.
 
-## Installation auf GitHub Pages
+## Bestehende V4-GitHub-Seite auf V5 aktualisieren (ohne Datenverlust)
+
+**Für bestehende Repositories bitte das separate `KL_EventRadar_V5_UPDATE_NUR_GEÄNDERTE_DATEIEN.zip` verwenden.** Diese ZIP enthält **kein** `data/` und **keine** `.github/`; dadurch bleiben bereits erfolgreich geladene Live-Events, Quellen-Caches und der eingerichtete automatische Workflow erhalten.
+
+1. ZIP entpacken, **Inhalt** (nicht übergeordneten ZIP-/Projektordner) in `https://github.com/Ettorak321/kl-eventradar` unter **Code → Add file → Upload files** hochladen. Die Ordner `css`, `js`, `scripts` und `tests` müssen erhalten bleiben; gleichnamige Dateien werden aktualisiert. Zur Vermeidung des bereits aufgetretenen Doppelordners nur den *Inhalt* ziehen.
+2. Unten **Commit changes** klicken. Anschließend unter **Actions → KL EventRadar Daten aktualisieren → Run workflow** starten, damit auch zuvor zwischengespeicherte Events die neue Kategorie erhalten und geografische Regeln genutzt werden.
+3. GitHub Pages öffnen: `https://ettorak321.github.io/kl-eventradar/`; Browser ggf. mit **Strg+F5** neu laden. Oben **Veranstaltungsarten** öffnen und mehrere Häkchen setzen. Bei „Nur Stadion“ und „Nur Kerwen“ wird die entsprechende Kategorie gegebenenfalls automatisch aktiviert.
+4. Kontrollieren: FCK-Heimspiel **rote Karte**, Kerwe **orange Karte**, Region **kleiner Farbpunkt**; Kultur/Museen/Ausstellungen standardmäßig nicht sichtbar. Datenquelle im Veranstaltungs-Detailfenster kontrollieren.
+
+**Die Website veröffentlicht keine neuen Daten, solange der Parser seine Quelle nicht erreicht.** Ein grüner Action-Haken beweist nur den technischen Ablauf, nicht die Vollständigkeit aller Veranstaltungen. Wenn bestimmte Termine trotz aktivierter Kategorien fehlen, `data/source_status.json`, Quelle und Actions-Log prüfen.
+
+## Installation auf GitHub Pages (neues Repository)
 
 1. ZIP-Datei entpacken. **Den Inhalt des Ordners `kl-eventradar`** in ein neues GitHub-Repository gleichen Namens hochladen. Die Ordner `.github`, `data`, `scripts`, `js`, `css`, `tests` müssen erhalten bleiben. Beim Upload über den Browser die Pfade prüfen; `.github` darf nicht fehlen.
 2. In GitHub unter **Settings → Actions → General → Workflow permissions** `Read and write permissions` für Actions zulassen. Bei Organisationsrichtlinien kann eine abweichende Einrichtung nötig sein.

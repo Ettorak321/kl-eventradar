@@ -24,3 +24,6 @@ test('long Unicode content folded by octets',()=>{
  const ics=exportEvents([{id:'x',title:'Ä'.repeat(120),start:'2026-11-08',allDay:true}]);
  for(const line of ics.trim().split('\r\n'))assert.ok(Buffer.byteLength(line,'utf8')<=75);
 });
+
+// Bei GitHub Actions läuft diese Datei als Einstiegspunkt: V5-Regressionen mit ausführen.
+require('./test_taxonomy.cjs');

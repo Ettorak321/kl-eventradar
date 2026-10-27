@@ -31,6 +31,9 @@ def classify_region(location, title=''):
     Keine Zuordnung allein aus 'Landkreis Kaiserslautern' oder Quellname.
     """
     place = str(location or '').strip()
+    # 'unter den Linden' ist ein Platz-/Straßenname, KEIN Nachweis für die
+    # Ortsgemeinde Linden (VG Landstuhl). Die Phrase vor Ortsabgleich entfernen.
+    place = re.sub(r'\bunter den linden\b', ' ', place, flags=re.I).strip()
     if not place and title:
         place = title
     if not place:

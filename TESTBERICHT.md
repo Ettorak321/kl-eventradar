@@ -1,29 +1,19 @@
-# KL EventRadar V4 – Testbericht
+# KL EventRadar V5 – Testbericht (26.10.2026)
 
-Stand: 22. Oktober 2026
+## Tatsächlich lokal ausgeführte Prüfungen
 
-## Offline tatsächlich ausgeführt
+- `python -m unittest discover -s tests -p 'test_*.py' -v`: **34 Tests bestanden**.
+- `node --test tests/test_ics.cjs`: **11 Tests bestanden**, inklusive V5-Veranstaltungskategorien.
+- `node --check js/app.js` und `node --check js/taxonomy.js`: **Syntaxprüfungen bestanden**.
+- Testfälle: FCK nur bei verifiziertem Heimspiel, Kerwe aus Veranstaltungstitel statt Region, mehrere Eventtypen gleichzeitig, Kultur/Museum/Ausstellung standardmäßig verborgen und wieder aktivierbar, manuelle Veranstaltungstypen, bestehende Quellen-Caches, ICS-Zeitformate, Mehrtageskalender, geografische Zuordnung und Problemfälle wie "Platz unter den Linden" oder Theaterbus-Abfahrten außerhalb der Stadt.
 
-- `python -m unittest discover -s tests -p 'test_*.py' -q` – **29 von 29 Tests erfolgreich**.
-- `node --test tests/test_ics.cjs` – **5 von 5 Tests erfolgreich**.
-- `node --check js/app.js`, `node --check js/ics.js` – **Syntaxprüfungen erfolgreich**.
-- `python -m py_compile scripts/*.py` – **erfolgreich**.
+## Nicht als bestanden ausgewiesen
 
-Die Python-Tests prüfen Auswärtsspiele, sichere Stadionzuordnung, Zeitzonen, Stadt-Paginierung, Sommerswing, quellenspezifischen Cache, alle sechs VGs + Stadt, wichtige Ortsteile, Kerwe-Datumsspannen, Abgrenzung von Kusel und Beispielstrukturen der neu eingebundenen Quellen. Die Node-Tests prüfen RFC-5545-/ICS-Export, UTC, mehrtägige Ganztagstermine und Zeilenfaltung.
+- **Kein echter Browser-End-to-End-Test**: In dieser Laufzeit fehlt die installierte Chromium-Browser-Binärdatei. Die FullCalendar-Darstellung (insbesondere das farbige Event im tatsächlichen Tagesraster) konnte daher hier nicht visuell bestätigt werden. CSS/JS sind für Monats-, Wochen- und Listenansicht explizit gesetzt, tatsächliches Rendering nach GitHub Pages Upload prüfen.
+- **Kein vollständiger Live-Parser-Durchlauf**: DNS/Netzwerkzugriff dieser Laufzeit ist eingeschränkt. Der öffentlich auslesbare GitHub-Rohdatensatz wurde extern auf Beispiele für mögliche Falschzuordnungen geprüft, aber neue Live-Abfragen der Eventquellen konnten hier nicht durchgeführt werden.
+- **Kein Beleg, dass alle Veranstaltungsorte korrekt zugeordnet sind**: Der reine Textvergleich bleibt bei manchen Ortsnamen mehrdeutig. Die geänderten Regeln beheben einzelne nachgewiesene Ursachen; sie machen daraus kein geographisches Nachschlagewerk.
+- **Keine Absatzprognose** und keine garantierte Vollständigkeit der FCK- und Gemeindequellen.
 
-## Nicht erfolgreich live verifiziert
+## Besonderheiten bei GitHub-Updates
 
-- **Externe Netzaufrufe:** Die Containerlaufzeit konnte `open-rlp.egovernor.de`, `ramstein-miesenbach.de`, `pfalz.de` und `kaiserslautern.de` nicht per DNS auflösen. Dies verhindert einen echten Import-Durchlauf über `requests`. Der öffentliche RLP-Endpunkt war auch über das Web-Lesewerkzeug nicht zugänglich.
-- **Live-HTML-Adapter:** Ramstein-Miesenbach, Weilerbach-Amtsblatt und Pfalz-JSON-LD wurden nur gegen eigens angelegte Testfixtures geprüft, nicht gegen echte heruntergeladene HTML-Quellbytes. Sie können bis zu Anpassungen Warnungen liefern.
-- **Browser-End-to-End-Test mit FullCalendar:** Kein vollständig bestätigter browserseitiger Test gegen einen öffentlich deployten GitHub-Pages-Stand. Der lokale Browser benötigt Zugriff auf das externe FullCalendar-CDN.
-- **Echte aktuelle Termine:** Die ausgelieferte `data/events.json` ist absichtlich **leer**, um keine ungesicherten Veranstaltungstermine vorzutäuschen. Echte FCK-Spiele, Weilerbacher Kerwen und sonstige Kreis-Termine erscheinen erst nach einem erfolgreichen GitHub-Actions-Quellenabgleich.
-
-## Abnahme auf GitHub Pages
-
-1. Action `Run workflow` erfolgreich starten; `source_status.json` kontrollieren.
-2. Einen FCK-Heimspieltag und einen dokumentierten Spielort manuell anhand `fck.de` gegenprüfen.
-3. Einen veröffentlichten Kerwetermin in Weilerbach oder Rodenbach mit einem Amtsblatt vergleichen.
-4. Alle sieben Regionsfilter öffnen und auf ungeklärte Quellenhinweise achten.
-5. Datum, Zeitzone und ICS-Export mit einem echten Termin prüfen.
-
-**Fachliches Fazit:** Geografische Auswahl und Farblogik sind implementiert und automatisiert geprüft. Vollständigkeit, Aktualität und Betriebssicherheit für die Getränkedisposition sind nicht ohne realen Testlauf bei erreichbaren Kommunalquellen belegbar.
+Die separate Update-ZIP enthält **weder `data/events.json` noch `data/cache/`, `data/source_status.json` oder `.github/workflows/`**. Bestehende Live-Veranstaltungen und der eingerichtete Workflow bleiben beim Aktualisieren des GitHub-Repositories erhalten. Nach dem Upload GitHub Action manuell ausführen; alte Cache-Einträge werden beim Abgleich neu typisiert. Wenn eine Quelle ausfällt, bleiben ihre alten Daten erhalten und können damit weiterhin falsch zugeordnet sein – die Quellenwarnung beachten.

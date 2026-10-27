@@ -10,6 +10,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales-all.global.min.js"></script>
   <script defer src="js/ics.js"></script>
+  <script defer src="js/taxonomy.js"></script>
   <script defer src="js/app.js"></script>
 </head>
 <body>
@@ -20,9 +21,18 @@
 <div id="alert-banner" class="alert-banner hidden" role="alert"></div>
 <nav class="filter-bar" aria-label="Kalenderfilter">
   <label class="sr-only" for="search-input">Suche</label><input id="search-input" type="search" placeholder="Veranstaltung suchen …" autocomplete="off">
-  <label class="sr-only" for="filter-category">Kategorie</label><select id="filter-category">
-    <option value="all">Alle Kategorien</option><option value="fussball">🔴 Fußball (Stadion)</option><option value="stadtfest">🟠 Stadtfeste</option><option value="konzert">🔵 Konzerte / Musik</option><option value="kultur">🟣 Kultur</option><option value="markt">🟢 Märkte / Messen</option>
-  </select>
+  <details class="category-picker" id="category-picker">
+    <summary id="category-summary">Veranstaltungsarten auswählen</summary>
+    <div class="category-panel">
+      <p class="picker-hint">Mehrfachauswahl: Nur angehakte Veranstaltungstypen werden angezeigt.</p>
+      <div class="category-presets">
+        <button type="button" class="mini-button" id="categories-relevant">Für Getränkedisposition</button>
+        <button type="button" class="mini-button" id="categories-all">Alle</button>
+        <button type="button" class="mini-button" id="categories-none">Keine</button>
+      </div>
+      <div id="category-choices" class="category-choices" aria-label="Veranstaltungsarten"></div>
+    </div>
+  </details>
   <label class="sr-only" for="filter-region">Verbandsgemeinde / Region</label><select id="filter-region">
     <option value="all">Alle Regionen (Stadt + Landkreis)</option>
     <option value="stadt-kl">Stadt Kaiserslautern</option>
@@ -37,13 +47,16 @@
   <label class="checkbox-label"><input id="filter-stadium" type="checkbox"> Nur Stadion</label>
   <label class="checkbox-label"><input id="filter-major" type="checkbox"> Nur große Events</label>
   <label class="checkbox-label"><input id="filter-kerwe" type="checkbox"> Nur Kerwen</label>
+  <label class="sr-only" for="filter-source">Datenquelle</label><select id="filter-source"><option value="all">Alle Datenquellen</option></select>
   <div class="view-switch" role="group" aria-label="Kalenderansicht"><button type="button" class="btn btn-sm active" data-view="dayGridMonth">Monat</button><button type="button" class="btn btn-sm btn-outline" data-view="timeGridWeek">Woche</button><button type="button" class="btn btn-sm btn-outline" data-view="listMonth">Liste</button></div>
 </nav>
 <main class="app-main">
   <aside class="sidebar">
-    <h2>Nächste Termine</h2><ul class="upcoming-list" id="upcoming-list"><li>Daten werden geladen …</li></ul>
+    <h2>Anzeige</h2><p id="filter-count" class="filter-count" aria-live="polite">Termine werden geladen …</p>
+    <h2 class="sources-heading">Veranstaltungsarten & Farben</h2><div id="type-legend" class="type-legend"></div>
+    <h2 class="sources-heading">Nächste Termine</h2><ul class="upcoming-list" id="upcoming-list"><li>Daten werden geladen …</li></ul>
     <h2 class="sources-heading">Regionen & Farben</h2><div id="region-legend" class="region-legend" aria-label="Farblegende"></div>
-    <p class="legend-note">Rot = FCK im Fritz-Walter-Stadion. Bei allen anderen Terminen kennzeichnet die Farbe die Region; der Text nennt den Veranstaltungstyp.</p>
+    <p class="legend-note">Die <strong>Terminfarbe</strong> zeigt die Art (z. B. Rot = bestätigtes FCK-Heimspiel, Orange = Kerwe). Der kleine farbige Punkt zeigt die <strong>Region</strong>. Die Datenquelle ist separat im Detailfenster ersichtlich.</p>
     <h2 class="sources-heading">Datenquellen</h2><div id="source-status" aria-live="polite"><p class="muted">Noch keine Aktualisierung</p></div>
     <div class="sidebar-actions"><button type="button" class="btn btn-block" id="btn-export-ics">Kalender (.ics) exportieren</button><button type="button" class="btn btn-block btn-outline" id="btn-add-custom">+ Eigener Termin</button></div>
   </aside>
@@ -64,12 +77,18 @@
        <option value="vg-enkenbach">VG Enkenbach-Alsenborn</option><option value="vg-landstuhl">VG Landstuhl</option>
        <option value="vg-otterbach">VG Otterbach-Otterberg</option><option value="vg-ramstein">VG Ramstein-Miesenbach</option>
        <option value="vg-weilerbach">VG Weilerbach</option></select></label>
-      <label>Kategorie<select id="custom-category"><option value="kultur">Kultur</option><option value="konzert">Konzert</option><option value="markt">Markt</option><option value="stadtfest">Stadtfest</option><option value="fussball">Fußball (privat, keine bestätigte Stadionbelegung)</option></select></label>
+      <label>Veranstaltungsart<select id="custom-category">
+        <option value="kerwe">Kerwe / Kirmes</option><option value="stadtfest">Stadt- / Vereinsfest</option>
+        <option value="konzert">Konzert / Musik</option><option value="sport">Sportveranstaltung</option>
+        <option value="markt">Markt / Messe</option><option value="ausstellung">Ausstellung</option>
+        <option value="museum">Museum</option><option value="kultur">Kultur / Theater</option>
+        <option value="sonstiges">Sonstiges</option><option value="fussball">Privates Fußballspiel (kein FCK-Stadiontermin)</option>
+      </select></label>
       <label>Beschreibung<textarea id="custom-desc" rows="3" maxlength="500"></textarea></label>
       <div class="form-actions"><button class="btn" type="submit">Speichern</button><button class="btn btn-outline hidden" type="button" id="custom-delete">Löschen</button></div>
     </form>
   </div>
 </div>
-<footer class="app-footer">Stadt Kaiserslautern (kreisfrei) + alle sechs Verbandsgemeinden des Landkreises. Kein Anspruch auf Vollständigkeit; Kommunalquellen können zeitweise fehlen. Nur öffentlich veröffentlichte Termine. <strong>Kein vollständiger Belegungsplan</strong> des Fritz-Walter-Stadions. Fehlende Einträge bedeuten nicht, dass das Stadion frei ist. Private Termine werden ausschließlich in diesem Browser gespeichert. Drittanbieter-Kalenderbibliothek benötigt beim ersten Öffnen Internetzugang.</footer>
+<footer class="app-footer">Stadt Kaiserslautern (kreisfrei) + alle sechs Verbandsgemeinden des Landkreises. Kategorien sind individuell mehrfach auswählbar; Kultur, Museen und Ausstellungen sind standardmäßig ausgeblendet. Kein Anspruch auf Vollständigkeit; Kommunalquellen können zeitweise fehlen. Nur öffentlich veröffentlichte Termine. <strong>Kein vollständiger Belegungsplan</strong> des Fritz-Walter-Stadions. Fehlende Einträge bedeuten nicht, dass das Stadion frei ist. Private Termine werden ausschließlich in diesem Browser gespeichert. Drittanbieter-Kalenderbibliothek benötigt beim ersten Öffnen Internetzugang.</footer>
 </body>
 </html>

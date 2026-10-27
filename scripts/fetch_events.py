@@ -21,9 +21,11 @@ from zoneinfo import ZoneInfo
 import requests
 from bs4 import BeautifulSoup
 try:
+    from .event_taxonomy import classify_event, relabel
     from .regions import classify_region, REGIONS
     from .regional_sources import OPEN_RLP, RAMSTEIN, PFALZ, parse_rlp_json, parse_ramstein_html, parse_pfalz_jsonld, event_type, WITTICH_EDITION, weilerbach_article_links, parse_weilerbach_article
 except ImportError:
+    from event_taxonomy import classify_event, relabel
     from regions import classify_region, REGIONS
     from regional_sources import OPEN_RLP, RAMSTEIN, PFALZ, parse_rlp_json, parse_ramstein_html, parse_pfalz_jsonld, event_type, WITTICH_EDITION, weilerbach_article_links, parse_weilerbach_article
 
@@ -81,14 +83,8 @@ def normalize_title(title):
     return re.sub(r"\W+", "", title.casefold(), flags=re.UNICODE)
 
 def category(title):
-    t = title.casefold()
-    if any(k in t for k in ("sommerswing", "konzert", "jazz", "musik", "blues", "band", "swing")):
-        return "konzert"
-    if any(k in t for k in ("stadtfest", "altstadtfest", "kerwe", "fest", "festival")):
-        return "stadtfest"
-    if any(k in t for k in ("markt", "messe", "basar")):
-        return "markt"
-    return "kultur"
+    """Veranstaltungstyp aus dem Inhalt, nicht aus Quell-URL oder Gebiet."""
+    return classify_event(title)
 
 def status_from(text, ics_status=""):
     val = text.casefold()
@@ -226,6 +222,9 @@ def fetch_fck(session=None):
 # -------- Stadt: durch Seitenzähler gesteuerte echte Paginierung --------
 def in_city(location):
     name = " ".join(location.casefold().split())
+    # Stadteinträge können Ausflüge mit KL als *Ziel* nennen, aber anderer Abfahrtsort.
+    if re.search(r"\b(?:abfahrt|busfahrt|theaterfahrt|tagesfahrt|reise nach)\b", name):
+        return False
     if not name:
         return False
     if any(bad in name for bad in OUTSIDE_KL):
@@ -462,7 +461,7 @@ def update_sources(loaders, cache_dir=CACHE, data_dir=DATA):
             entry.update(status="error", error=str(exc)[:350], eventCount=len(old), stale=True)
             if not entry.get("lastSuccess") and previous.get("lastSuccess"):
                 entry["lastSuccess"] = previous["lastSuccess"]
-    merged = dedupe_cross_sources(all_events)
+    merged = [relabel(ev) for ev in dedupe_cross_sources(all_events)]
     now = stamp()
     prior = read_json(data_dir / "events.json", {})
     # lastSuccessfulSync wird nur geändert, wenn wirklich mind. eine Quelle erfolgreich war.

@@ -8,8 +8,10 @@ from datetime import date, datetime, timedelta
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 try:
+    from .event_taxonomy import LABELS, classify_event
     from .regions import REGIONS, classify_region
 except ImportError:  # Start via python scripts/fetch_events.py
+    from event_taxonomy import LABELS, classify_event
     from regions import REGIONS, classify_region
 
 OPEN_RLP = 'https://open-rlp.egovernor.de/metaData/event/data'
@@ -58,6 +60,9 @@ def parse_rlp_json(payload, tz, make_id, stamp, category, status_from):
                 parts=[loc.get('name'),loc['address'].get('addressLocality'),loc['address'].get('streetAddress')]
             loc=' '.join(str(x) for x in parts if isinstance(x,str))
         if not isinstance(loc,str):continue
+        # Eine Anreise nach Kaiserslautern ist kein dort stattfindendes Event.
+        if re.search(r'\b(?:abfahrt|busfahrt|theaterfahrt|tagesfahrt)\b',loc,re.I):
+            continue
         region,locality=classify_region(loc)
         if not region:continue
         start_info=parse_start(ev.get('startDate') or ev.get('start'),tz)
@@ -78,12 +83,10 @@ def parse_rlp_json(payload, tz, make_id, stamp, category, status_from):
     return out
 
 
-def event_type(title,category):
-    t=title.casefold()
-    if any(w in t for w in ('kerwe','kerb','kirchweih','kirmes')):return 'Kerwe'
-    if 'fussball' in t or 'fußball' in t:return 'Fußball'
-    return {'fussball':'Fußball','stadtfest':'Fest / Veranstaltung','konzert':'Musik / Konzert','markt':'Markt / Messe','kultur':'Kultur / Sonstiges'}.get(category,'Veranstaltung')
-
+def event_type(title, category):
+    """Beschriftung der Veranstaltung statt Herkunftsfarbe."""
+    kind = classify_event(title)
+    return LABELS[kind]
 
 def parse_ramstein_html(text, tz, make_id, stamp, category, status_from):
     """Konservative HTML-Tabellenparser-Variante. Erkennt Tabellen mit
