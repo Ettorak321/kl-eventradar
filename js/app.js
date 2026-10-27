@@ -4,7 +4,7 @@
  if (!TAX) throw new Error('Die Veranstaltungstypen-Bibliothek wurde nicht geladen');
  const DEFAULT_SELECTED = TAX.defaultSelected();
  let selectedKinds = new Set(DEFAULT_SELECTED);
- const NAMES={fck:'FCK-Profis',city:'Stadt Kaiserslautern',sommerswing:'Sommerswing',rlp:'OpenData Rheinland-Pfalz',ramstein:'VG Ramstein-Miesenbach',pfalz:'Pfalz Touristik (Landkreis)',weilerbach:'VG Weilerbach / Amtsblatt'};
+ const NAMES={fck:'FCK-Profis',city:'Stadt Kaiserslautern',sommerswing:'Sommerswing',rlp:'OpenData Rheinland-Pfalz',ramstein:'VG Ramstein-Miesenbach',pfalz:'Pfalz Touristik (Landkreis)',weilerbach:'VG Weilerbach / Amtsblatt',kerwe_forecast:'Kerwe-Vorschau aus Vorjahren'};
  const REGIONS={
    'stadt-kl':['Stadt Kaiserslautern','#8b6ee0'],
    'vg-bruchmuehlbach':['Bruchmühlbach-Miesau','#b48730'],
@@ -20,7 +20,7 @@
  const areaName=ev=>REGIONS[ev.region]?.[0]||'Region nicht ermittelt';
  let remoteEvents=[],customEvents=[],filteredEvents=[],calendar=null,lastData=null;
  const $=id=>document.getElementById(id);
- const E={calendar:$('calendar'),upcoming:$('upcoming-list'),sync:$('sync-info'),alert:$('alert-banner'),source:$('source-status'),search:$('search-input'),categoryChoices:$('category-choices'),categorySummary:$('category-summary'),count:$('filter-count'),typeLegend:$('type-legend'),sourceFilter:$('filter-source'),location:$('filter-location'),region:$('filter-region'),kerwe:$('filter-kerwe'),legend:$('region-legend'),customRegion:$('custom-region'),stadium:$('filter-stadium'),major:$('filter-major'),modal:$('event-modal'),modalTitle:$('modal-title'),modalBody:$('modal-body'),modalActions:$('modal-actions'),form:$('custom-form'),customModal:$('custom-modal'),customId:$('custom-id'),customTitle:$('custom-title'),customDate:$('custom-date'),customTime:$('custom-time'),customLocation:$('custom-location'),customCategory:$('custom-category'),customDesc:$('custom-desc'),customDelete:$('custom-delete')};
+ const E={calendar:$('calendar'),upcoming:$('upcoming-list'),sync:$('sync-info'),alert:$('alert-banner'),source:$('source-status'),search:$('search-input'),categoryChoices:$('category-choices'),categorySummary:$('category-summary'),count:$('filter-count'),typeLegend:$('type-legend'),sourceFilter:$('filter-source'),forecastFilter:$('filter-forecast'),forecastSummary:$('forecast-summary'),location:$('filter-location'),region:$('filter-region'),kerwe:$('filter-kerwe'),legend:$('region-legend'),customRegion:$('custom-region'),stadium:$('filter-stadium'),major:$('filter-major'),modal:$('event-modal'),modalTitle:$('modal-title'),modalBody:$('modal-body'),modalActions:$('modal-actions'),form:$('custom-form'),customModal:$('custom-modal'),customId:$('custom-id'),customTitle:$('custom-title'),customDate:$('custom-date'),customTime:$('custom-time'),customLocation:$('custom-location'),customCategory:$('custom-category'),customDesc:$('custom-desc'),customDelete:$('custom-delete')};
  const node=(tag,props={},children=[])=>{const e=document.createElement(tag);for(const [k,v] of Object.entries(props)){if(k==='text')e.textContent=v??'';else if(k==='class')e.className=v;else if(k==='value')e.value=v;else if(k==='type')e.type=v;else if(k.startsWith('data-'))e.setAttribute(k,v);}for(const c of children)e.append(c);return e;};
  const safeUrl=url=>{try{const u=new URL(url);return ['http:','https:'].includes(u.protocol)?u.href:null;}catch{return null;}};
  const dateOnly=iso=>iso?.slice(0,10)||'';
@@ -60,21 +60,21 @@
  function toFCEvent(ev){return {
    id:ev.id,title:ev.title,start:ev.start,end:ev.end||undefined,allDay:ev.allDay,
    backgroundColor:ev.displayColor,borderColor:ev.displayColor,textColor:'#fff',
-   classNames:['kl-event-card'],extendedProps:{payload:ev}
+   classNames:['kl-event-card',...(ev.forecast?['kl-forecast']:[])],extendedProps:{payload:ev}
  };}
  function applyFilters(){
   const q=E.search.value.trim().toLocaleLowerCase('de');
   filteredEvents=TAX.filter(localEvents(),selectedKinds,ev=>
    (E.location.value==='all'||ev.location===E.location.value)&&
    (E.region.value==='all'||ev.region===E.region.value)&&
-   (E.sourceFilter.value==='all'||ev.sourceKey===E.sourceFilter.value)&&
+   (E.sourceFilter.value==='all'||ev.sourceKey===E.sourceFilter.value)&&(E.forecastFilter.value==='all'||(E.forecastFilter.value==='forecast'?ev.forecast===true:ev.forecast!==true))&&
    (!E.kerwe.checked||ev.displayCategory==='kerwe')&&
    (!E.stadium.checked||(ev.displayCategory==='fussball'&&ev.isStadium===true))&&
    (!E.major.checked||ev.isMajor===true)&&
    (!q||[ev.title,ev.description,ev.location,ev.locality,areaName(ev),ev.displayLabel].join(' ').toLocaleLowerCase('de').includes(q))
   );
   if(calendar){calendar.removeAllEvents();calendar.addEventSource(filteredEvents.map(toFCEvent));}
-  E.count.textContent=`${filteredEvents.length} von ${localEvents().length} Terminen angezeigt`;
+  E.count.textContent=`${filteredEvents.length} von ${localEvents().length} Terminen angezeigt`;const count=remoteEvents.filter(ev=>ev.forecast===true).length;E.forecastSummary.textContent=count?`${count} unverbindliche Kerwe-Vorschauen. Gestrichelt = nicht offiziell bestätigt.`:'Keine Kerwe-Vorschauen geladen.';
   renderUpcoming();
  }
  function renderUpcoming(){
@@ -88,14 +88,14 @@
    const kindTag=node('span',{class:'upcoming-type',text:`${ev.displayLabel} · ${areaName(ev)} `});kindTag.append(regionDot);
    const li=node('li',{},[
     node('span',{class:'date',text:format(ev.start)}),kindTag,
-    node('strong',{text:ev.title}),node('span',{class:'loc',text:ev.location||'Ort nicht angegeben'})
+    node('strong',{text:ev.title}),...(ev.forecast?[node('span',{class:'forecast-tag',text:'◇ Prognose · nicht bestätigt'})]:[]),node('span',{class:'loc',text:ev.location||'Ort nicht angegeben'})
    ]);
    li.style.borderLeft=`4px solid ${ev.displayColor}`;li.style.paddingLeft='9px';li.tabIndex=0;
    li.setAttribute('role','button');li.addEventListener('click',()=>showEvent(ev));
    li.addEventListener('keydown',e=>{if(e.key==='Enter')showEvent(ev);});E.upcoming.append(li);
   }
  }
- function showEvent(ev){E.modalTitle.textContent=ev.title||'Veranstaltung';E.modalBody.replaceChildren();E.modalActions.replaceChildren();const dl=node('dl');const add=(term,value)=>{dl.append(node('dt',{text:term}),node('dd',{text:value??'Nicht bekannt'}));};add('Region / tatsächlicher Ort',areaName(ev));add('Datenquelle',NAMES[ev.sourceKey]||ev.sourceKey||'Eigener Termin');add('Ortsteil',ev.locality||'Nicht angegeben');add('Veranstaltungsart',eventType(ev));add('Beginn',format(ev.start));if(ev.end)add('Ende',ev.allDay?`${dateOnly(window.KLICS.addDays(ev.end,-1))} (einschließlich)` : format(ev.end));add('Ort',ev.location);add('Adresse',ev.address);add('Kalenderfarbe / Art',TAX.decorate(ev).displayLabel);add('Quelle ≠ Veranstaltungsort','Der Datenanbieter bestimmt nicht die Farbe oder Region.');add('Status',({confirmed:'Bestätigt',tentative:'Vorläufig',cancelled:'Abgesagt',postponed:'Verschoben'})[ev.status]||'Nicht bekannt');add('Beschreibung',ev.description);if(ev.stale)add('Datenstand','Quelle beim letzten Abruf nicht erreichbar – möglicherweise veraltet');if(ev.sourceKey==='rlp'||ev.sourceKey==='pfalz'||ev.sourceKey==='ramstein'||ev.sourceKey==='weilerbach')add('Ortszuordnung','Automatisch aus der veröffentlichten Ortsangabe; für Lieferplanung bitte Originalquelle prüfen');if(ev.isStadium)add('Stadionprüfung','Fritz-Walter-Stadion ausdrücklich als Veranstaltungsort ausgewiesen');if(ev.lastChecked)add('Zuletzt geprüft',format(ev.lastChecked));const link=safeUrl(ev.source);if(link){dl.append(node('dt',{text:'Quelle'}));const dd=node('dd');const a=node('a',{text:'Originalveranstaltung öffnen'});a.href=link;a.target='_blank';a.rel='noopener noreferrer';dd.append(a);dl.append(dd);}E.modalBody.append(dl);
+ function showEvent(ev){E.modalTitle.textContent=ev.title||'Veranstaltung';E.modalBody.replaceChildren();E.modalActions.replaceChildren();const dl=node('dl');const add=(term,value)=>{dl.append(node('dt',{text:term}),node('dd',{text:value??'Nicht bekannt'}));};add('Region / tatsächlicher Ort',areaName(ev));add('Datenquelle',NAMES[ev.sourceKey]||ev.sourceKey||'Eigener Termin');add('Ortsteil',ev.locality||'Nicht angegeben');add('Veranstaltungsart',eventType(ev));add('Beginn',format(ev.start));if(ev.end)add('Ende',ev.allDay?`${dateOnly(window.KLICS.addDays(ev.end,-1))} (einschließlich)` : format(ev.end));add('Ort',ev.location);add('Adresse',ev.address);add('Kalenderfarbe / Art',TAX.decorate(ev).displayLabel);add('Quelle ≠ Veranstaltungsort','Der Datenanbieter bestimmt nicht die Farbe oder Region.');add('Status',({confirmed:'Veröffentlicht',tentative:'Vorläufig',cancelled:'Abgesagt',postponed:'Verschoben',predicted:'Prognose – nicht offiziell bestätigt'})[ev.status]||'Nicht bekannt');if(ev.forecast){add('Wiederholungsregel',ev.forecastRule);add('Einschränkungen',ev.forecastNotes);}add('Beschreibung',ev.description);if(ev.stale)add('Datenstand','Quelle beim letzten Abruf nicht erreichbar – möglicherweise veraltet');if(ev.sourceKey==='rlp'||ev.sourceKey==='pfalz'||ev.sourceKey==='ramstein'||ev.sourceKey==='weilerbach')add('Ortszuordnung','Automatisch aus der veröffentlichten Ortsangabe; bitte Originalquelle prüfen');if(ev.isStadium)add('Stadionprüfung','Fritz-Walter-Stadion ausdrücklich als Veranstaltungsort ausgewiesen');if(ev.lastChecked)add('Zuletzt geprüft',format(ev.lastChecked));const link=safeUrl(ev.source);if(link){dl.append(node('dt',{text:'Quelle'}));const dd=node('dd');const a=node('a',{text:'Originalveranstaltung öffnen'});a.href=link;a.target='_blank';a.rel='noopener noreferrer';dd.append(a);dl.append(dd);}E.modalBody.append(dl);if(ev.forecast&&Array.isArray(ev.forecastEvidence)){const links=node('div',{class:'forecast-evidence'},[node('strong',{text:'Historische Quellen (keine Bestätigung):'})]);for(const v of ev.forecastEvidence){const u=safeUrl(v.url);if(u){const a=node('a',{text:'Quelle '+v.year});a.href=u;a.rel='noopener noreferrer';a.target='_blank';links.append(a);}}E.modalBody.append(links);}
   if(ev.isCustom){const edit=node('button',{class:'btn',text:'Bearbeiten'});edit.type='button';edit.addEventListener('click',()=>{closeModal(E.modal);openCustom(ev);});E.modalActions.append(edit);}openModal(E.modal);}
  function openModal(m){m.classList.remove('hidden');m.querySelector('.modal-close')?.focus();}
  function closeModal(m){m.classList.add('hidden');}
@@ -110,10 +110,10 @@
    eventContent:info=>{
     const ev=info.event.extendedProps.payload||{};
     const type=node('span',{class:'kl-type-chip',text:ev.displayLabel||eventType(ev)});
-    const title=node('span',{class:'kl-event-name',text:info.event.title});
+    const title=node('span',{class:'kl-event-name',text:info.event.title});const forecast=ev.forecast?node('span',{class:'kl-forecast-tag',text:'Prognose'}):null;
     const region=node('span',{class:'region-dot','data-region':ev.region});
     region.style.background=regionColor(ev);
-    return {domNodes:[node('span',{class:'kl-calendar-event'},[type,title,region])]};
+    return {domNodes:[node('span',{class:'kl-calendar-event'},[type,...(forecast?[forecast]:[]),title,region])]};
    },
    eventDidMount:info=>{
     const ev=info.event.extendedProps.payload||{};
@@ -121,7 +121,7 @@
     // Explizite CSS-Variable: FullCalendar-Ansichten überschreiben sonst teils die Eventfarbe.
     info.el.style.setProperty('--kl-event-color',color);
     info.el.style.setProperty('--kl-region-color',regionColor(ev));
-    info.el.style.setProperty('border-color',color,'important');
+    info.el.style.setProperty('border-color',color,'important');if(ev.forecast)info.el.style.setProperty('border-style','dashed','important');
     if(!info.view.type.startsWith('list')){
       info.el.style.setProperty('background-color',color,'important');
       info.el.style.setProperty('color','#fff','important');
@@ -141,7 +141,7 @@
  }
  function saveICS(){if(!window.KLICS)return;try{const content=window.KLICS.exportEvents(filteredEvents);const url=URL.createObjectURL(new Blob([content],{type:'text/calendar;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='kl-eventradar.ics';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(err){E.alert.textContent=`ICS-Export fehlgeschlagen: ${err.message}`;E.alert.classList.remove('hidden');}}
  E.form.addEventListener('submit',saveEvent);E.customDelete.addEventListener('click',()=>{const id=E.customId.value;if(!id||!confirm('Eigenen Termin wirklich löschen?'))return;customEvents=customEvents.filter(e=>e.id!==id);storeCustom();closeModal(E.customModal);fillLocations();applyFilters();});$('btn-add-custom').addEventListener('click',()=>openCustom());$('btn-export-ics').addEventListener('click',saveICS);$('btn-refresh').addEventListener('click',loadData);
- for(const id of ['search-input','filter-source','filter-region','filter-location','filter-major'])
+ for(const id of ['search-input','filter-source','filter-region','filter-location','filter-major','filter-forecast'])
   $(id).addEventListener(id==='search-input'?'input':'change',applyFilters);
  E.kerwe.addEventListener('change',()=>{
   if(E.kerwe.checked && !selectedKinds.has('kerwe')){

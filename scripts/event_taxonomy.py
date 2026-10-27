@@ -1,5 +1,5 @@
 """KL EventRadar V5: Veranstaltungstyp ist unabhängig von Region und Datenquelle.
-Konservative Schlagwortklassifikation; keine Absatz-/Besucherprognose.
+Konservative Schlagwortklassifikation; Quellen und Orte getrennt.
 """
 import re
 
