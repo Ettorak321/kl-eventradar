@@ -21,8 +21,8 @@ test('simultaneous multiselection shows different event types',()=>{
  assert.equal(T.filter(items,['kerwe','konzert','stadtfest']).length,3);
  assert.equal(T.filter(items,[]).length,0);
 });
-test('all ten types are distinct and presets omit low-priority culture',()=>{
- assert.equal(new Set(T.TYPES.map(t=>t.id)).size,10);
+test('all event types are distinct and presets omit low-priority culture',()=>{
+ assert.equal(new Set(T.TYPES.map(t=>t.id)).size,T.TYPES.length);
  for (const id of ['ausstellung','museum','kultur','sonstiges']) assert.ok(!T.defaultSelected().includes(id));
 });
 
