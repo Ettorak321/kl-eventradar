@@ -4,13 +4,13 @@ Konservative Schlagwortklassifikation; Quellen und Orte getrennt.
 import re
 
 LABELS = {
-    'fussball': 'FCK-Heimspiel', 'kerwe': 'Kerwe',
+    'fussball': 'FCK-Heimspiel', 'fck_auswaerts': 'FCK-Auswärtsspiel', 'kerwe': 'Kerwe',
     'stadtfest': 'Stadt- / Vereinsfest', 'konzert': 'Konzert / Musik',
     'sport': 'Sportveranstaltung', 'markt': 'Markt / Messe',
     'ausstellung': 'Ausstellung', 'museum': 'Museum',
     'kultur': 'Kultur / Theater', 'sonstiges': 'Sonstiges',
 }
-IMPORTANT = ('fussball', 'kerwe', 'stadtfest', 'konzert', 'sport', 'markt')
+IMPORTANT = ('fussball', 'fck_auswaerts', 'kerwe', 'stadtfest', 'konzert', 'sport', 'markt')
 
 
 def classify_event(title, is_stadium=False, source_key=None):
@@ -42,11 +42,15 @@ def classify_event(title, is_stadium=False, source_key=None):
 def relabel(ev):
     """Auch alte Events aus einzelnen Quellen-Caches beim nächsten Lauf korrigieren."""
     result = dict(ev)
-    kind = classify_event(result.get('title', ''), result.get('isStadium') is True
-                          and result.get('venueVerified') is True,
-                          result.get('sourceKey'))
+    kind = ('fck_auswaerts' if result.get('sourceKey') == 'fck' and result.get('isAway') is True
+            else classify_event(result.get('title', ''), result.get('isStadium') is True
+                                and result.get('venueVerified') is True, result.get('sourceKey')))
     result['category'] = kind
     result['eventType'] = LABELS[kind]
+    if kind == 'fck_auswaerts':
+        result['isStadium'] = False
+        result['venueVerified'] = False
+        result['isAway'] = True
     if kind == 'fussball':
         result['isStadium'] = True
         result['isMajor'] = True
@@ -54,5 +58,5 @@ def relabel(ev):
         # Unbestätigte alte FCK-Caches nie als Stadionbelegung deklarieren.
         result['isStadium'] = False
     # Sportfest/Kerwe/Stadtfest sind ggf. publikumswirksam; nur grobe Kennzeichnung.
-    result['isMajor'] = kind in ('fussball', 'kerwe', 'stadtfest') or (kind == 'konzert' and bool(result.get('isMajor')))
+    result['isMajor'] = kind in ('fussball', 'fck_auswaerts', 'kerwe', 'stadtfest') or (kind == 'konzert' and bool(result.get('isMajor')))
     return result
