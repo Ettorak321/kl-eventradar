@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "horizonYears": 4,
+  "description": "Aus Vorjahresterminen abgeleitete unverbindliche Kerwe-Vorschauen – keine offiziellen Termine.",
+  "rules": [
+    {
+      "id": "rodenbach-kerwe",
+      "name": "Kerwe in Rodenbach",
+      "region": "vg-weilerbach",
+      "locality": "Rodenbach",
+      "location": "Rodenbach",
+      "month": 9,
+      "weekday": 6,
+      "nth": 1,
+      "startOffsetDays": -2,
+      "durationDays": 4,
+      "ruleText": "Freitag bis Montag um den ersten Sonntag im September",
+      "notes": "Aus veröffentlichten Terminen 2024 und 2026 abgeleitet; Termin und Dauer können abweichen.",
+      "evidence": [
+        {
+          "year": 2024,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/1/2024/artikel/00000000000040386315-OL-798-2024-1-1-0"
+        },
+        {
+          "year": 2026,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/36/2026/artikel/00000000000054618840-OL-798-2026-36-36-0"
+        }
+      ]
+    },
+    {
+      "id": "mackenbach-kerwe",
+      "name": "Kerwe in Mackenbach",
+      "region": "vg-weilerbach",
+      "locality": "Mackenbach",
+      "location": "Mackenbach",
+      "month": 9,
+      "weekday": 6,
+      "nth": 2,
+      "startOffsetDays": -2,
+      "durationDays": 4,
+      "ruleText": "Üblicherweise das zweite Septemberwochenende, Freitag bis Montag",
+      "notes": "Im Jahr 2024 lag die Kerwe abweichend am ersten Septemberwochenende. Die Regel ist daher keine Garantie.",
+      "evidence": [
+        {
+          "year": 2023,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/36/2023/artikel/00000000000038271771-OL-798-2023-36-36-0"
+        },
+        {
+          "year": 2025,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/36/2025/artikel/00000000000049369350-OL-798-2025-36-36-0"
+        },
+        {
+          "year": 2026,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/36/2026/artikel/00000000000054618840-OL-798-2026-36-36-0"
+        }
+      ],
+      "exceptions": [
+        {
+          "year": 2024,
+          "note": "Kerwe am 7. bis 9. September 2024 laut Kalender"
+        }
+      ]
+    },
+    {
+      "id": "weilerbach-kerwe",
+      "name": "Kerwe in Weilerbach",
+      "region": "vg-weilerbach",
+      "locality": "Weilerbach",
+      "location": "Dorfplatz Alter Bahnhof, Weilerbach",
+      "month": 9,
+      "weekday": 6,
+      "nth": 4,
+      "startOffsetDays": -2,
+      "durationDays": 4,
+      "ruleText": "Freitag bis Montag um den vierten Sonntag im September",
+      "notes": "Regel aus den veröffentlichten Terminen 2024, 2025 und 2026 abgeleitet.",
+      "evidence": [
+        {
+          "year": 2024,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/36/2024/artikel/00000000000043856505-OL-798-2024-36-36-0"
+        },
+        {
+          "year": 2025,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/34/2025/artikel/00000000000049179627-OL-798-2025-34-34-0"
+        },
+        {
+          "year": 2026,
+          "url": "https://ol.wittich.de/titel/798/ausgabe/36/2026/artikel/00000000000054618840-OL-798-2026-36-36-0"
+        }
+      ]
+    }
+  ]
+}
