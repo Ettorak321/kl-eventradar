@@ -1,50 +1,50 @@
 {
   "city": {
-    "eventCount": 424,
-    "lastAttempt": "2026-10-26T23:38:02+01:00",
-    "lastSuccess": "2026-10-26T23:38:26+01:00",
+    "eventCount": 423,
+    "lastAttempt": "2026-10-27T05:58:55+01:00",
+    "lastSuccess": "2026-10-27T05:59:18+01:00",
     "stale": false,
     "status": "ok"
   },
   "fck": {
     "eventCount": 7,
-    "lastAttempt": "2026-10-26T23:37:59+01:00",
-    "lastSuccess": "2026-10-26T23:38:02+01:00",
+    "lastAttempt": "2026-10-27T05:58:52+01:00",
+    "lastSuccess": "2026-10-27T05:58:55+01:00",
     "stale": false,
     "status": "ok"
   },
   "pfalz": {
     "error": "Pfalz.de: keine strukturierten Event-Einträge gefunden",
     "eventCount": 0,
-    "lastAttempt": "2026-10-26T23:38:31+01:00",
+    "lastAttempt": "2026-10-27T05:59:23+01:00",
     "stale": true,
     "status": "error"
   },
   "ramstein": {
     "error": "Ramstein-HTML nicht erkannt oder keine verifizierbaren Termine",
     "eventCount": 0,
-    "lastAttempt": "2026-10-26T23:38:30+01:00",
+    "lastAttempt": "2026-10-27T05:59:22+01:00",
     "stale": true,
     "status": "error"
   },
   "rlp": {
-    "eventCount": 11,
-    "lastAttempt": "2026-10-26T23:38:26+01:00",
-    "lastSuccess": "2026-10-26T23:38:30+01:00",
+    "eventCount": 3,
+    "lastAttempt": "2026-10-27T05:59:19+01:00",
+    "lastSuccess": "2026-10-27T05:59:22+01:00",
     "stale": false,
     "status": "ok"
   },
   "sommerswing": {
     "eventCount": 8,
-    "lastAttempt": "2026-10-26T23:38:26+01:00",
-    "lastSuccess": "2026-10-26T23:38:26+01:00",
+    "lastAttempt": "2026-10-27T05:59:18+01:00",
+    "lastSuccess": "2026-10-27T05:59:19+01:00",
     "stale": false,
     "status": "ok"
   },
   "weilerbach": {
     "eventCount": 13,
-    "lastAttempt": "2026-10-26T23:38:32+01:00",
-    "lastSuccess": "2026-10-26T23:38:39+01:00",
+    "lastAttempt": "2026-10-27T05:59:24+01:00",
+    "lastSuccess": "2026-10-27T05:59:32+01:00",
     "stale": false,
     "status": "ok"
   }
