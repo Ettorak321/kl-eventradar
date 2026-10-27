@@ -32,7 +32,8 @@ class TestFCK(unittest.TestCase):
     def test_mixed_feed_excludes_away_unknown_and_training(self):
         with patch.object(fe,'fetch',return_value=SimpleNamespace(content=(FIXTURES/'fck_mixed.ics').read_bytes())):
             events=fe.parse_fck_ics('https://feed.example/ics')
-        self.assertEqual(len(events),1)
+        self.assertEqual(len(events),2)
+        events=[ev for ev in events if ev['isStadium']]
         self.assertEqual(events[0]['category'],'fussball')
         self.assertTrue(events[0]['venueVerified'])
         self.assertTrue(events[0]['isStadium'])

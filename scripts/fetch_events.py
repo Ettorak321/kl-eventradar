@@ -140,22 +140,40 @@ def parse_ics_date(prop):
         dt = dt.replace(tzinfo=TZ)
     return dt.isoformat(timespec="seconds"), False
 
+FCK_TEAM = re.compile(r"^(?:(?:1\.\s*)?fc\s+kaiserslautern|fck)$", re.I)
+FIXTURE = re.compile(r"^\s*(.+?)\s+(?:[-–—]|vs\.?|gegen)\s+(.+?)\s*$", re.I)
+NOT_PROFESSIONAL = re.compile(r"u[\s-]?(?:17|19|21|23)\b|zweite\s+mannschaft|training|pressekonferenz|museum|geburtstag", re.I)
+
+
+def fixture_kind(summary, location):
+    """'home', 'away' oder None. Heimstadion nur mit Nachweis."""
+    if NOT_PROFESSIONAL.search(summary or ""):
+        return None
+    match = FIXTURE.fullmatch(summary or "")
+    if not match:
+        return None
+    first = match.group(1).strip()
+    second = re.split(r"\s*\|\s*", match.group(2))[0].strip()
+    fck_first = bool(FCK_TEAM.fullmatch(first))
+    fck_second = bool(FCK_TEAM.fullmatch(second))
+    if fck_first == fck_second:
+        return None
+    if fck_second:
+        # Spielstätten-Information ist für FCK-Auswärtsspiele optional.
+        # Widersprüchliche Standortinformationen dürfen keine scheinbare Gewissheit erzeugen.
+        if "fritz-walter" in (location or "").casefold() or "betzenberg" in (location or "").casefold():
+            return None
+        return "away"
+    return "home" if ("fritz-walter" in (location or "").casefold() or "betzenberg" in (location or "").casefold()) else None
+
+
 def is_fixture(summary):
-    """Nur Paarungen der Profis mit FCK als *erstgenanntem* Heimteam."""
-    normalized = re.sub(r"\s+", " ", summary.casefold())
-    if re.search(r"u\s?(?:17|19|21|23)|training|pressekonferenz|museum|geburtstag", normalized):
-        return False
-    return bool(re.match(
-        r"^\s*(?:(?:1\.\s*)?fc\s*kaiserslautern|fck)\s*(?:-|–|—|vs\.?|gegen)\s+\S",
-        normalized,
-    ))
+    return fixture_kind(summary, "Fritz-Walter-Stadion") == "home"
+
 
 def is_home_game(summary, location):
-    """Spielpaarung FCK zuerst + ausdrücklich Fritz-Walter-Stadion."""
-    if not is_fixture(summary):
-        return False
-    norm = re.sub(r"\s+", " ", location.casefold())
-    return "fritz-walter" in norm or "betzenberg" in norm
+    return fixture_kind(summary, location) == "home"
+
 
 def discover_official_ics(session=None):
     """Folgt nicht Google-OAuth, sondern extrahiert cid aus dem offiziellen Profi-Button."""
@@ -182,7 +200,8 @@ def parse_fck_ics(ics_url, session=None):
     for item in ics_components(payload):
         summary = item.get("SUMMARY", ("", ""))[1].strip()
         loc = item.get("LOCATION", ("", ""))[1].strip()
-        if not is_home_game(summary, loc):
+        kind = fixture_kind(summary, loc)
+        if not kind:
             continue
         try:
             start, all_day = parse_ics_date(item.get("DTSTART"))
@@ -195,19 +214,25 @@ def parse_fck_ics(ics_url, session=None):
         uid = item.get("UID", ("", ""))[1]
         recurrence_id = item.get("RECURRENCE-ID", ("", ""))[1]
         source_id = f"{uid}/{recurrence_id}" if uid else f"{summary}|{start}"
+        home = kind == "home"
         events.append({
-            "id": stable_id("fck", source_id), "sourceKey": "fck", "title": summary, "region":"stadt-kl", "locality":"Kaiserslautern", "eventType":"FCK-Heimspiel",
+            "id": stable_id("fck", source_id), "sourceKey": "fck", "title": summary,
+            "region": "stadt-kl", "locality": "Kaiserslautern" if home else "FCK – Auswärtsspiel",
+            "eventType": "FCK-Heimspiel" if home else "FCK-Auswärtsspiel",
             "start": start, "end": end, "allDay": all_day,
-            "location": "Fritz-Walter-Stadion, Kaiserslautern", "address": "Fritz-Walter-Straße 1, 67663 Kaiserslautern",
-            "category": "fussball", "description": "Öffentlich bestätigter Profifußball-Termin",
+            "location": ("Fritz-Walter-Stadion, Kaiserslautern" if home else (loc or "Auswärtsspiel – Spielort nicht angegeben")),
+            "address": "Fritz-Walter-Straße 1, 67663 Kaiserslautern" if home else "",
+            "category": "fussball" if home else "fck_auswaerts",
+            "description": "FCK-Profifußballspiel" + (" im Fritz-Walter-Stadion" if home else " auswärts – keine Stadionbelegung in Kaiserslautern"),
             "organizer": "1. FC Kaiserslautern", "source": FCK_PAGE,
             "sourceUrl": ics_url, "status": status_from(summary, item.get("STATUS", ("", ""))[1]),
-            "isStadium": True, "venueVerified": True, "isMajor": True,
+            "isStadium": home, "venueVerified": home, "isAway": not home,
+            "fixtureKind": kind, "isMajor": True,
             "lastChecked": stamp(),
         })
     # Akzeptiere keine komplett leere Antwort als belastbaren neuen Stand.
     if not events:
-        raise SourceError("ICS abrufbar, aber kein nachweislich im Fritz-Walter-Stadion stattfindendes Profispiel enthalten")
+        raise SourceError("Keine eindeutig erkennbaren FCK-Profispiele im ICS-Feed")
     return dedupe_exact(events)
 
 def fetch_fck(session=None):

@@ -7,6 +7,7 @@
   'use strict';
   const TYPES = [
     {id:'fussball',name:'FCK-Heimspiele',color:'#c62828',defaultOn:true},
+    {id:'fck_auswaerts',name:'FCK-Auswärtsspiele',color:'#d68846',defaultOn:true},
     {id:'kerwe',name:'Kerwen / Kirmes',color:'#e97827',defaultOn:true},
     {id:'stadtfest',name:'Stadt- / Vereinsfeste',color:'#e0a21f',defaultOn:true},
     {id:'konzert',name:'Konzerte / Musik',color:'#287bd1',defaultOn:true},
@@ -22,6 +23,7 @@
   function classify(ev) {
     const t = String(ev?.title || '').toLocaleLowerCase('de');
     const s = String(ev?.sourceKey || '');
+    if (s === 'fck' && ev?.isAway === true && ev?.isStadium !== true) return 'fck_auswaerts';
     if (s === 'fck' && ev?.isStadium === true && ev?.venueVerified === true) return 'fussball';
     if (/kerwe|kerb\b|kirchweih|kirmes/i.test(t)) return 'kerwe';
     // Eigene manuell eingetragene Termine respektieren die bewusste Typauswahl.
