@@ -4,7 +4,7 @@
  if (!TAX) throw new Error('Die Veranstaltungstypen-Bibliothek wurde nicht geladen');
  const DEFAULT_SELECTED = TAX.defaultSelected();
  let selectedKinds = new Set(DEFAULT_SELECTED);
- const NAMES={fck:'FCK-Profis',city:'Stadt Kaiserslautern',sommerswing:'Sommerswing',rlp:'OpenData Rheinland-Pfalz',ramstein:'VG Ramstein-Miesenbach',pfalz:'Pfalz Touristik (Landkreis)',weilerbach:'VG Weilerbach / Amtsblatt',kerwe_forecast:'Kerwe-Vorschau aus Vorjahren'};
+ const NAMES={fck:'FCK-Profis',city:'Stadt Kaiserslautern',sommerswing:'Sommerswing',rlp:'OpenData Rheinland-Pfalz',ramstein:'VG Ramstein-Miesenbach',pfalz:'Pfalz Touristik (Landkreis)',weilerbach:'VG Weilerbach / Amtsblatt',kerwe_forecast:'Kerwe-Vorschau aus Vorjahren',calendar_days:'Berechnete Feiertage & Anlässe'};
  const REGIONS={
    'stadt-kl':['Stadt Kaiserslautern','#8b6ee0'],
    'vg-bruchmuehlbach':['Bruchmühlbach-Miesau','#b48730'],
@@ -16,8 +16,8 @@
  };
  const eventType=ev=>TAX.decorate(ev).displayLabel;
  const typeColor=ev=>TAX.decorate(ev).displayColor;
- const regionColor=ev=>ev.isAway?'#d68846':REGIONS[ev.region]?.[1]||'#607d8b';
- const areaName=ev=>REGIONS[ev.region]?.[0]||'Region nicht ermittelt';
+ const regionColor=ev=>ev.isAnnualDay?'#bd9ed0':ev.isAway?'#d68846':REGIONS[ev.region]?.[1]||'#607d8b';
+ const areaName=ev=>ev.isAnnualDay?'Alle Regionen (Rheinland-Pfalz)':REGIONS[ev.region]?.[0]||'Region nicht ermittelt';
  let remoteEvents=[],customEvents=[],filteredEvents=[],calendar=null,lastData=null;
  const $=id=>document.getElementById(id);
  const E={calendar:$('calendar'),upcoming:$('upcoming-list'),sync:$('sync-info'),alert:$('alert-banner'),source:$('source-status'),search:$('search-input'),categoryChoices:$('category-choices'),categorySummary:$('category-summary'),count:$('filter-count'),typeLegend:$('type-legend'),sourceFilter:$('filter-source'),forecastFilter:$('filter-forecast'),forecastSummary:$('forecast-summary'),location:$('filter-location'),region:$('filter-region'),kerwe:$('filter-kerwe'),legend:$('region-legend'),customRegion:$('custom-region'),stadium:$('filter-stadium'),away:$('filter-away'),feedback:$('refresh-feedback'),major:$('filter-major'),modal:$('event-modal'),modalTitle:$('modal-title'),modalBody:$('modal-body'),modalActions:$('modal-actions'),form:$('custom-form'),customModal:$('custom-modal'),customId:$('custom-id'),customTitle:$('custom-title'),customDate:$('custom-date'),customTime:$('custom-time'),customLocation:$('custom-location'),customCategory:$('custom-category'),customDesc:$('custom-desc'),customDelete:$('custom-delete')};
@@ -37,7 +37,13 @@
  function loadSelection() {
   try {
    const stored=JSON.parse(localStorage.getItem('kl-selected-event-types')||'null');
-   if(Array.isArray(stored)){ selectedKinds=new Set(stored.filter(id=>TAX.TYPES.some(t=>t.id===id))); if(stored.includes('fussball'))selectedKinds.add('fck_auswaerts'); }
+   if(Array.isArray(stored)){ selectedKinds=new Set(stored.filter(id=>TAX.TYPES.some(t=>t.id===id))); if(stored.includes('fussball'))selectedKinds.add('fck_auswaerts');
+    // Einmalige Erweiterung alter Filterprofile; bewusst leere Auswahl bleibt erhalten.
+    if(stored.length && !localStorage.getItem('kl-v8-kalendertage-migriert')){
+      selectedKinds.add('feiertag');selectedKinds.add('anlass');
+      localStorage.setItem('kl-v8-kalendertage-migriert','1');storeSelection();
+    }
+  }
   }catch{}
  }
  function storeSelection(){try{localStorage.setItem('kl-selected-event-types',JSON.stringify([...selectedKinds]));}catch{}}
@@ -60,13 +66,13 @@
  function toFCEvent(ev){return {
    id:ev.id,title:ev.title,start:ev.start,end:ev.end||undefined,allDay:ev.allDay,
    backgroundColor:ev.displayColor,borderColor:ev.displayColor,textColor:'#fff',
-   classNames:['kl-event-card',...(ev.forecast?['kl-forecast']:[])],extendedProps:{payload:ev}
+   classNames:['kl-event-card',...(ev.forecast?['kl-forecast']:[]),...(ev.isAnnualDay?['kl-calendar-day']:[])],extendedProps:{payload:ev}
  };}
  function applyFilters(){
   const q=E.search.value.trim().toLocaleLowerCase('de');
   filteredEvents=TAX.filter(localEvents(),selectedKinds,ev=>
-   (E.location.value==='all'||ev.location===E.location.value)&&
-   (E.region.value==='all'||ev.region===E.region.value)&&
+   (E.location.value==='all'||ev.location===E.location.value||ev.isAnnualDay===true)&&
+   (E.region.value==='all'||ev.region===E.region.value||ev.isAnnualDay===true)&&
    (E.sourceFilter.value==='all'||ev.sourceKey===E.sourceFilter.value)&&(E.forecastFilter.value==='all'||(E.forecastFilter.value==='forecast'?ev.forecast===true:ev.forecast!==true))&&
    (!E.kerwe.checked||ev.displayCategory==='kerwe')&&
    (!E.stadium.checked||(ev.displayCategory==='fussball'&&ev.isStadium===true))&&
@@ -96,7 +102,7 @@
    li.addEventListener('keydown',e=>{if(e.key==='Enter')showEvent(ev);});E.upcoming.append(li);
   }
  }
- function showEvent(ev){E.modalTitle.textContent=ev.title||'Veranstaltung';E.modalBody.replaceChildren();E.modalActions.replaceChildren();const dl=node('dl');const add=(term,value)=>{dl.append(node('dt',{text:term}),node('dd',{text:value??'Nicht bekannt'}));};add('Region / tatsächlicher Ort',ev.isAway?'Auswärtsspiel – kein lokaler Spielort':areaName(ev));add('Datenquelle',NAMES[ev.sourceKey]||ev.sourceKey||'Eigener Termin');add('Ortsteil',ev.locality||'Nicht angegeben');add('Veranstaltungsart',eventType(ev));if(ev.isAway)add('FCK-Spielart','Auswärtsspiel; keine Stadionbelegung in Kaiserslautern');add('Beginn',format(ev.start));if(ev.end)add('Ende',ev.allDay?`${dateOnly(window.KLICS.addDays(ev.end,-1))} (einschließlich)` : format(ev.end));add('Ort',ev.location);add('Adresse',ev.address);add('Kalenderfarbe / Art',TAX.decorate(ev).displayLabel);add('Quelle ≠ Veranstaltungsort','Der Datenanbieter bestimmt nicht die Farbe oder Region.');add('Status',({confirmed:'Veröffentlicht',tentative:'Vorläufig',cancelled:'Abgesagt',postponed:'Verschoben',predicted:'Prognose – nicht offiziell bestätigt'})[ev.status]||'Nicht bekannt');if(ev.forecast){add('Wiederholungsregel',ev.forecastRule);add('Einschränkungen',ev.forecastNotes);}add('Beschreibung',ev.description);if(ev.stale)add('Datenstand','Quelle beim letzten Abruf nicht erreichbar – möglicherweise veraltet');if(ev.sourceKey==='rlp'||ev.sourceKey==='pfalz'||ev.sourceKey==='ramstein'||ev.sourceKey==='weilerbach')add('Ortszuordnung','Automatisch aus der veröffentlichten Ortsangabe; bitte Originalquelle prüfen');if(ev.isStadium)add('Stadionprüfung','Fritz-Walter-Stadion ausdrücklich als Veranstaltungsort ausgewiesen');if(ev.lastChecked)add('Zuletzt geprüft',format(ev.lastChecked));const link=safeUrl(ev.source);if(link){dl.append(node('dt',{text:'Quelle'}));const dd=node('dd');const a=node('a',{text:'Originalveranstaltung öffnen'});a.href=link;a.target='_blank';a.rel='noopener noreferrer';dd.append(a);dl.append(dd);}E.modalBody.append(dl);if(ev.forecast&&Array.isArray(ev.forecastEvidence)){const links=node('div',{class:'forecast-evidence'},[node('strong',{text:'Historische Quellen (keine Bestätigung):'})]);for(const v of ev.forecastEvidence){const u=safeUrl(v.url);if(u){const a=node('a',{text:'Quelle '+v.year});a.href=u;a.rel='noopener noreferrer';a.target='_blank';links.append(a);}}E.modalBody.append(links);}
+ function showEvent(ev){E.modalTitle.textContent=ev.title||'Veranstaltung';E.modalBody.replaceChildren();E.modalActions.replaceChildren();const dl=node('dl');const add=(term,value)=>{dl.append(node('dt',{text:term}),node('dd',{text:value??'Nicht bekannt'}));};add('Region / tatsächlicher Ort',ev.isAway?'Auswärtsspiel – kein lokaler Spielort':areaName(ev));add('Datenquelle',NAMES[ev.sourceKey]||ev.sourceKey||'Eigener Termin');add('Ortsteil',ev.locality||'Nicht angegeben');add('Veranstaltungsart',eventType(ev));if(ev.isAway)add('FCK-Spielart','Auswärtsspiel; keine Stadionbelegung in Kaiserslautern');if(ev.isAnnualDay){add('Kalenderhinweis',ev.isPublicHoliday?'Gesetzlicher Feiertag in Rheinland-Pfalz':'Besonderer Anlass, kein gesetzlicher Feiertag in Rheinland-Pfalz');add('Geltungsbereich','Überregionaler Kalendertag; kein bestätigter Veranstaltungsort');}add('Beginn',format(ev.start));if(ev.end)add('Ende',ev.allDay?`${dateOnly(window.KLICS.addDays(ev.end,-1))} (einschließlich)` : format(ev.end));add('Ort',ev.location);add('Adresse',ev.address);add('Kalenderfarbe / Art',TAX.decorate(ev).displayLabel);add('Quelle ≠ Veranstaltungsort','Der Datenanbieter bestimmt nicht die Farbe oder Region.');add('Status',({confirmed:'Veröffentlicht',tentative:'Vorläufig',cancelled:'Abgesagt',postponed:'Verschoben',predicted:'Prognose – nicht offiziell bestätigt'})[ev.status]||'Nicht bekannt');if(ev.forecast){add('Wiederholungsregel',ev.forecastRule);add('Einschränkungen',ev.forecastNotes);}add('Beschreibung',ev.description);if(ev.stale)add('Datenstand','Quelle beim letzten Abruf nicht erreichbar – möglicherweise veraltet');if(ev.sourceKey==='rlp'||ev.sourceKey==='pfalz'||ev.sourceKey==='ramstein'||ev.sourceKey==='weilerbach')add('Ortszuordnung','Automatisch aus der veröffentlichten Ortsangabe; bitte Originalquelle prüfen');if(ev.isStadium)add('Stadionprüfung','Fritz-Walter-Stadion ausdrücklich als Veranstaltungsort ausgewiesen');if(ev.lastChecked)add('Zuletzt geprüft',format(ev.lastChecked));const link=safeUrl(ev.source);if(link){dl.append(node('dt',{text:'Quelle'}));const dd=node('dd');const a=node('a',{text:'Originalveranstaltung öffnen'});a.href=link;a.target='_blank';a.rel='noopener noreferrer';dd.append(a);dl.append(dd);}E.modalBody.append(dl);if(ev.forecast&&Array.isArray(ev.forecastEvidence)){const links=node('div',{class:'forecast-evidence'},[node('strong',{text:'Historische Quellen (keine Bestätigung):'})]);for(const v of ev.forecastEvidence){const u=safeUrl(v.url);if(u){const a=node('a',{text:'Quelle '+v.year});a.href=u;a.rel='noopener noreferrer';a.target='_blank';links.append(a);}}E.modalBody.append(links);}
   if(ev.isCustom){const edit=node('button',{class:'btn',text:'Bearbeiten'});edit.type='button';edit.addEventListener('click',()=>{closeModal(E.modal);openCustom(ev);});E.modalActions.append(edit);}openModal(E.modal);}
  function openModal(m){m.classList.remove('hidden');m.querySelector('.modal-close')?.focus();}
  function closeModal(m){m.classList.add('hidden');}
@@ -133,7 +139,7 @@
    height:'auto',dayMaxEvents:5,initialDate:new Date(),
    // FCK und Kerwen sollen bei vollen Tagen vor Kultur und sonstigen Events erscheinen.
    eventOrder:(a,b)=>{
-    const rank={fussball:0,fck_auswaerts:1,kerwe:2,stadtfest:2,konzert:3,sport:4,markt:5,ausstellung:6,museum:7,kultur:8,sonstiges:9};
+    const rank={fussball:0,fck_auswaerts:1,feiertag:2,anlass:3,kerwe:4,stadtfest:5,konzert:6,sport:7,markt:8,ausstellung:9,museum:10,kultur:11,sonstiges:12};
     const ca=a.extendedProps?.payload?.displayCategory,cb=b.extendedProps?.payload?.displayCategory;
     return (rank[ca]??99)-(rank[cb]??99);
    },eventOrderStrict:true,

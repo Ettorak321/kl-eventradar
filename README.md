@@ -51,3 +51,13 @@ Kerwe-Vorschauen sind historisch abgeleitet und können falsch sein; maßgeblich
 Der Profi-Kalender importiert nun Heimspiele (rot, nur mit nachgewiesenem Fritz-Walter-Stadion) und eindeutige FCK-Auswärtsspiele (kupferfarben). Auswärtsspiele werden niemals als lokale Stadionbelegung behandelt und können getrennt gefiltert werden. Der Spielort außerhalb des Landkreises ist eine Information zur Begegnung, kein regionaler Veranstaltungsort. Ob ein Lokal die Übertragung zeigt, wird nicht behauptet.
 
 **Datenstand prüfen** lädt die bereits veröffentlichte `events.json` erneut. **Quellenabruf starten** öffnet den GitHub-Actions-Workflow; dort können angemeldete Berechtigte mit „Run workflow“ einen neuen Abruf auslösen. Eine öffentliche GitHub-Pages-Seite darf nicht ohne Authentisierung Schreibaktionen ausführen. Automatische Abrufe laufen weiterhin ungefähr alle sechs Stunden.
+
+## Feiertage und besondere Anlässe (V8)
+
+KL EventRadar berechnet jährlich **alle 11 gesetzlichen Feiertage Rheinland-Pfalz** und gesondert besondere Kalenderanlässe für das aktuelle Jahr sowie fünf Folgejahre. Eingeschlossen sind unter anderem St. Patrick's Day (17. März), Halloween (31. Oktober), Silvester (31. Dezember), Valentinstag, Weiberfastnacht, Rosenmontag, Fastnachtsdienstag, Aschermittwoch, Ostersonntag, Tanz in den Mai, Muttertag, Pfingstsonntag, Martinstag, Beginn der Fastnachtssaison, Nikolaustag und Heiligabend.
+
+Im Kategorienfilter stehen **Gesetzliche Feiertage (RLP)** und **Besondere Anlässe** getrennt zur Verfügung. Die Angaben gelten unabhängig von der gewählten Verbandsgemeinde und werden aus Kalenderregeln berechnet; **sie sind keine offiziellen Veranstaltungsankündigungen**. Vorhandene Quellen-Caches bleiben unberührt. Bestehende Filterprofile werden einmalig ergänzt; eine bewusst leere Auswahl bleibt leer.
+
+Gesetzliche Feiertage beruhen auf der Liste des Ministeriums des Innern und für Sport Rheinland-Pfalz: https://mdi.rlp.de/themen/buerger-und-staat/verfassung-und-verwaltung/sonn-und-feiertagsrecht
+
+Bewegliche Feiertage basieren auf dem gregorianischen Ostertermin, Muttertag auf dem zweiten Sonntag im Mai. Schulferien, ortsspezifische Feste und nicht verifizierte Veranstaltungsreihen werden dadurch nicht automatisch erzeugt. Keine Aussagen über Besucherzahlen oder wirtschaftliche Auswirkungen.

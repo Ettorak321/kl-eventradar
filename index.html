@@ -15,7 +15,7 @@
 </head>
 <body>
 <header class="app-header">
-  <div><p class="eyebrow">STADT & LANDKREIS KAISERSLAUTERN · VERANSTALTUNGSÜBERSICHT</p><h1><span class="red-dot"></span> KL EventRadar</h1><p class="subtitle">FCK-Heim- und Auswärtsspiele · Kerwen · Feste · Konzerte in Stadt & Landkreis</p></div>
+  <div><p class="eyebrow">STADT & LANDKREIS KAISERSLAUTERN · VERANSTALTUNGSÜBERSICHT</p><h1><span class="red-dot"></span> KL EventRadar</h1><p class="subtitle">FCK-Heim- und Auswärtsspiele · Kerwen · Feste · Feiertage · Konzerte in Stadt & Landkreis</p></div>
   <div class="header-actions"><div id="sync-info" role="status">Datenstand wird geladen …</div><button class="btn btn-outline" id="btn-refresh" type="button">↻ Datenstand prüfen</button><a class="btn btn-outline" id="btn-fetch-sources" href="https://github.com/Ettorak321/kl-eventradar/actions/workflows/update-events.yml" target="_blank" rel="noopener noreferrer">Quellenabruf starten ↗</a></div>
 </header>
 <div id="alert-banner" class="alert-banner hidden" role="alert"></div>
@@ -56,7 +56,7 @@
     <p class="muted" id="refresh-feedback" aria-live="polite" role="status">„Datenstand prüfen“ lädt veröffentlichte Kalenderdaten neu. Der Abruf externer Quellen erfolgt über GitHub Actions.</p><h2 class="sources-heading">Veranstaltungsarten & Farben</h2><div id="type-legend" class="type-legend"></div>
     <p id="forecast-summary" class="forecast-summary">Kerwe-Vorschauen werden geladen …</p><h2 class="sources-heading">Nächste Termine</h2><ul class="upcoming-list" id="upcoming-list"><li>Daten werden geladen …</li></ul>
     <h2 class="sources-heading">Regionen & Farben</h2><div id="region-legend" class="region-legend" aria-label="Farblegende"></div>
-    <p class="legend-note">Die <strong>Terminfarbe</strong> zeigt die Art (z. B. Rot = FCK-Heimspiel, Kupfer = FCK-Auswärtsspiel, Orange = Kerwe). Der kleine farbige Punkt zeigt die <strong>Region</strong>. Die Datenquelle ist separat im Detailfenster ersichtlich.</p>
+    <p class="legend-note">Die <strong>Terminfarbe</strong> zeigt die Art (z. B. Rot = FCK-Heimspiel, Kupfer = FCK-Auswärtsspiel, Orange = Kerwe, Violett = gesetzlicher Feiertag, Pink = besonderer Anlass). Der kleine farbige Punkt zeigt die <strong>Region</strong>. Die Datenquelle ist separat im Detailfenster ersichtlich.</p>
     <h2 class="sources-heading">Datenquellen</h2><div id="source-status" aria-live="polite"><p class="muted">Noch keine Aktualisierung</p></div>
     <div class="sidebar-actions"><button type="button" class="btn btn-block" id="btn-export-ics">Kalender (.ics) exportieren</button><button type="button" class="btn btn-block btn-outline" id="btn-add-custom">+ Eigener Termin</button></div>
   </aside>
@@ -89,6 +89,6 @@
     </form>
   </div>
 </div>
-<footer class="app-footer">Stadt Kaiserslautern (kreisfrei) + alle sechs Verbandsgemeinden des Landkreises. Kategorien sind individuell mehrfach auswählbar; Kultur, Museen und Ausstellungen sind standardmäßig ausgeblendet. Kein Anspruch auf Vollständigkeit; Kommunalquellen können zeitweise fehlen. Öffentliche Termine und ausdrücklich gekennzeichnete Kerwe-Prognosen. <strong>Kein vollständiger Belegungsplan</strong> des Fritz-Walter-Stadions. Fehlende Einträge bedeuten nicht, dass das Stadion frei ist. Private Termine werden ausschließlich in diesem Browser gespeichert. Drittanbieter-Kalenderbibliothek benötigt beim ersten Öffnen Internetzugang.</footer>
+<footer class="app-footer">Stadt Kaiserslautern (kreisfrei) + alle sechs Verbandsgemeinden des Landkreises. Kategorien sind individuell mehrfach auswählbar; Kultur, Museen und Ausstellungen sind standardmäßig ausgeblendet. Kein Anspruch auf Vollständigkeit; Kommunalquellen können zeitweise fehlen. Öffentliche Termine, gekennzeichnete Kerwe-Prognosen sowie berechnete Feiertage und wiederkehrende Anlässe. Besondere Anlässe sind nicht automatisch gesetzliche Feiertage oder bestätigte lokale Veranstaltungen. <strong>Kein vollständiger Belegungsplan</strong> des Fritz-Walter-Stadions. Fehlende Einträge bedeuten nicht, dass das Stadion frei ist. Private Termine werden ausschließlich in diesem Browser gespeichert. Drittanbieter-Kalenderbibliothek benötigt beim ersten Öffnen Internetzugang.</footer>
 </body>
 </html>
