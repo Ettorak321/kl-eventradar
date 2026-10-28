@@ -13,6 +13,8 @@
     {id:'konzert',name:'Konzerte / Musik',color:'#287bd1',defaultOn:true},
     {id:'sport',name:'Sonstige Sportevents',color:'#12a4aa',defaultOn:true},
     {id:'markt',name:'Märkte / Messen',color:'#26845f',defaultOn:true},
+    {id:'feiertag',name:'Gesetzliche Feiertage (RLP)',color:'#9562c5',defaultOn:true},
+    {id:'anlass',name:'Besondere Anlässe',color:'#bd568d',defaultOn:true},
     {id:'ausstellung',name:'Ausstellungen',color:'#956db9',defaultOn:false},
     {id:'museum',name:'Museen / Führungen',color:'#8174a0',defaultOn:false},
     {id:'kultur',name:'Kultur / Theater',color:'#7662a9',defaultOn:false},
@@ -23,6 +25,7 @@
   function classify(ev) {
     const t = String(ev?.title || '').toLocaleLowerCase('de');
     const s = String(ev?.sourceKey || '');
+    if (s === 'calendar_days' && (ev?.category === 'feiertag' || ev?.category === 'anlass')) return ev.category;
     if (s === 'fck' && ev?.isAway === true && ev?.isStadium !== true) return 'fck_auswaerts';
     if (s === 'fck' && ev?.isStadium === true && ev?.venueVerified === true) return 'fussball';
     if (/kerwe|kerb\b|kirchweih|kirmes/i.test(t)) return 'kerwe';

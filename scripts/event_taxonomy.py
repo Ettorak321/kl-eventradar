@@ -7,10 +7,11 @@ LABELS = {
     'fussball': 'FCK-Heimspiel', 'fck_auswaerts': 'FCK-Auswärtsspiel', 'kerwe': 'Kerwe',
     'stadtfest': 'Stadt- / Vereinsfest', 'konzert': 'Konzert / Musik',
     'sport': 'Sportveranstaltung', 'markt': 'Markt / Messe',
+    'feiertag': 'Gesetzlicher Feiertag (RLP)', 'anlass': 'Besonderer Anlass',
     'ausstellung': 'Ausstellung', 'museum': 'Museum',
     'kultur': 'Kultur / Theater', 'sonstiges': 'Sonstiges',
 }
-IMPORTANT = ('fussball', 'fck_auswaerts', 'kerwe', 'stadtfest', 'konzert', 'sport', 'markt')
+IMPORTANT = ('fussball', 'fck_auswaerts', 'kerwe', 'stadtfest', 'konzert', 'sport', 'markt', 'feiertag', 'anlass')
 
 
 def classify_event(title, is_stadium=False, source_key=None):
@@ -42,7 +43,8 @@ def classify_event(title, is_stadium=False, source_key=None):
 def relabel(ev):
     """Auch alte Events aus einzelnen Quellen-Caches beim nächsten Lauf korrigieren."""
     result = dict(ev)
-    kind = ('fck_auswaerts' if result.get('sourceKey') == 'fck' and result.get('isAway') is True
+    kind = (result['category'] if result.get('sourceKey') == 'calendar_days' and result.get('category') in ('feiertag', 'anlass')
+            else 'fck_auswaerts' if result.get('sourceKey') == 'fck' and result.get('isAway') is True
             else classify_event(result.get('title', ''), result.get('isStadium') is True
                                 and result.get('venueVerified') is True, result.get('sourceKey')))
     result['category'] = kind
