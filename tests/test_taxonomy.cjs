@@ -30,3 +30,11 @@ test('manual category survives generic title and cannot impersonate FCK stadium'
  assert.equal(T.classify(ev('Interner Termin',{isCustom:true,category:'kerwe'})),'kerwe');
  assert.equal(T.classify(ev('Privates Fußballspiel',{isCustom:true,category:'fussball'})),'sport');
 });
+
+test('RLP holidays and occasions remain distinct and selected by default',()=>{
+ const legal=T.decorate({sourceKey:'calendar_days',category:'feiertag',title:'Fronleichnam'});
+ const special=T.decorate({sourceKey:'calendar_days',category:'anlass',title:'Halloween'});
+ assert.equal(legal.displayCategory,'feiertag');assert.equal(special.displayCategory,'anlass');
+ assert.notEqual(legal.displayColor,special.displayColor);
+ assert.ok(T.defaultSelected().includes('feiertag'));assert.ok(T.defaultSelected().includes('anlass'));
+});

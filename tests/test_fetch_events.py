@@ -89,10 +89,10 @@ class TestCache(unittest.TestCase):
         with tempfile.TemporaryDirectory() as root:
             cache=Path(root)/'cache';data=Path(root)/'data'
             first=fe.update_sources({'fck': lambda:[item('fck','1','FCK - Bochum')], 'city':lambda:[item('city','1','Altstadtfest')]},cache,data)
-            self.assertEqual(first['eventCount'],2)
+            self.assertEqual(len([e for e in first['events'] if not e.get('isAnnualDay')]),2)
             def fail():raise fe.SourceError('FCK nicht erreichbar')
             second=fe.update_sources({'fck':fail,'city':lambda:[item('city','2','Oktoberkerwe')]},cache,data)
-            self.assertEqual({x['id'] for x in second['events']},{'fck-1','city-2'})
+            self.assertEqual({x['id'] for x in second['events'] if not x.get('isAnnualDay')},{'fck-1','city-2'})
             self.assertTrue(next(x for x in second['events'] if x['sourceKey']=='fck')['stale'])
             self.assertEqual(second['sourceStatus']['fck']['status'],'error')
             self.assertEqual(second['sourceStatus']['city']['status'],'ok')
