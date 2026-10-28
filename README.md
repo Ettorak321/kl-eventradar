@@ -61,3 +61,5 @@ Im Kategorienfilter stehen **Gesetzliche Feiertage (RLP)** und **Besondere Anlä
 Gesetzliche Feiertage beruhen auf der Liste des Ministeriums des Innern und für Sport Rheinland-Pfalz: https://mdi.rlp.de/themen/buerger-und-staat/verfassung-und-verwaltung/sonn-und-feiertagsrecht
 
 Bewegliche Feiertage basieren auf dem gregorianischen Ostertermin, Muttertag auf dem zweiten Sonntag im Mai. Schulferien, ortsspezifische Feste und nicht verifizierte Veranstaltungsreihen werden dadurch nicht automatisch erzeugt. Keine Aussagen über Besucherzahlen oder wirtschaftliche Auswirkungen.
+
+Weitere feste oder regelbasierte Kalendertage: Black Friday (Freitag nach dem vierten Donnerstag im November) sowie die vier Adventssonntage. Diese sind keine gesetzlichen Feiertage. Der Statusfilter „Nur veröffentlichte Veranstaltungen“ blendet berechnete Kalendertage ebenso aus wie Kerwe-Vorschauen.

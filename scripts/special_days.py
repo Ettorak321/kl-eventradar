@@ -53,6 +53,8 @@ def annual_days(year: int) -> list[dict]:
         ("1. Weihnachtstag", fixed(12, 25)),
         ("2. Weihnachtstag", fixed(12, 26)),
     ]
+    fourth_advent = fixed(12, 24) - timedelta(days=(fixed(12, 24).weekday() - 6) % 7)
+    black_friday = nth_weekday(year, 11, 3, 4) + timedelta(days=1)
     occasions = [
         ("Valentinstag", fixed(2, 14)),
         ("Weiberfastnacht", offset(-52)),
@@ -67,6 +69,11 @@ def annual_days(year: int) -> list[dict]:
         ("Halloween", fixed(10, 31)),
         ("Martinstag", fixed(11, 11)),
         ("Beginn der Fastnachtssaison (11.11.)", fixed(11, 11)),
+        ("Black Friday", black_friday),
+        ("1. Advent", fourth_advent - timedelta(days=21)),
+        ("2. Advent", fourth_advent - timedelta(days=14)),
+        ("3. Advent", fourth_advent - timedelta(days=7)),
+        ("4. Advent", fourth_advent),
         ("Nikolaustag", fixed(12, 6)),
         ("Heiligabend", fixed(12, 24)),
         ("Silvester", fixed(12, 31)),

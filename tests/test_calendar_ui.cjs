@@ -14,3 +14,8 @@ test('öffentliche Oberfläche ohne gewerbliche Zwecke',()=>{
  assert.match(html,/Feiertage/);
  assert.doesNotMatch(html,/getränkeabsatz|disposition|umsatzstark|umsatzprognose/i);
 });
+
+test('veröffentlichte Veranstaltungen schließen berechnete Jahrestage aus',()=>{
+ assert.match(read('js/app.js'),/ev\.isAnnualDay!==true/);
+ assert.match(read('index.html'),/Nur veröffentlichte Veranstaltungen/);
+});

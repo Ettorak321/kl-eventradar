@@ -73,7 +73,7 @@
   filteredEvents=TAX.filter(localEvents(),selectedKinds,ev=>
    (E.location.value==='all'||ev.location===E.location.value||ev.isAnnualDay===true)&&
    (E.region.value==='all'||ev.region===E.region.value||ev.isAnnualDay===true)&&
-   (E.sourceFilter.value==='all'||ev.sourceKey===E.sourceFilter.value)&&(E.forecastFilter.value==='all'||(E.forecastFilter.value==='forecast'?ev.forecast===true:ev.forecast!==true))&&
+   (E.sourceFilter.value==='all'||ev.sourceKey===E.sourceFilter.value)&&(E.forecastFilter.value==='all'||(E.forecastFilter.value==='forecast'?ev.forecast===true:ev.forecast!==true && ev.isAnnualDay!==true))&&
    (!E.kerwe.checked||ev.displayCategory==='kerwe')&&
    (!E.stadium.checked||(ev.displayCategory==='fussball'&&ev.isStadium===true))&&
    (!E.away.checked||(ev.displayCategory==='fck_auswaerts'&&ev.isAway===true))&&
