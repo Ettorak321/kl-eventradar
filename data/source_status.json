@@ -1,50 +1,51 @@
 {
   "city": {
+    "error": "Abruf fehlgeschlagen (https://www.kaiserslautern.de/tourismus_freizeit_kultur/veranstaltungen/index.html.de): HTTPSConnectionPool(host='www.kaiserslautern.de', port=443): Max retries exceeded with url: /tourismus_freizeit_kultur/veranstaltungen/index.html.de (Caused by ConnectTimeoutError(<HTTPSConnection(host='www.kaiserslautern.de', port=443) at ",
     "eventCount": 429,
-    "lastAttempt": "2026-10-30T06:42:03+01:00",
+    "lastAttempt": "2026-10-30T13:48:48+01:00",
     "lastSuccess": "2026-10-30T06:42:34+01:00",
-    "stale": false,
-    "status": "ok"
+    "stale": true,
+    "status": "error"
   },
   "fck": {
     "eventCount": 39,
-    "lastAttempt": "2026-10-30T06:42:00+01:00",
-    "lastSuccess": "2026-10-30T06:42:03+01:00",
+    "lastAttempt": "2026-10-30T13:48:45+01:00",
+    "lastSuccess": "2026-10-30T13:48:48+01:00",
     "stale": false,
     "status": "ok"
   },
   "pfalz": {
     "error": "Pfalz.de: keine strukturierten Event-Einträge gefunden",
     "eventCount": 0,
-    "lastAttempt": "2026-10-30T06:42:41+01:00",
+    "lastAttempt": "2026-10-30T13:49:16+01:00",
     "stale": true,
     "status": "error"
   },
   "ramstein": {
     "error": "Ramstein-HTML nicht erkannt oder keine verifizierbaren Termine",
     "eventCount": 0,
-    "lastAttempt": "2026-10-30T06:42:39+01:00",
+    "lastAttempt": "2026-10-30T13:49:15+01:00",
     "stale": true,
     "status": "error"
   },
   "rlp": {
     "eventCount": 3,
-    "lastAttempt": "2026-10-30T06:42:35+01:00",
-    "lastSuccess": "2026-10-30T06:42:39+01:00",
+    "lastAttempt": "2026-10-30T13:49:11+01:00",
+    "lastSuccess": "2026-10-30T13:49:15+01:00",
     "stale": false,
     "status": "ok"
   },
   "sommerswing": {
     "eventCount": 8,
-    "lastAttempt": "2026-10-30T06:42:34+01:00",
-    "lastSuccess": "2026-10-30T06:42:35+01:00",
+    "lastAttempt": "2026-10-30T13:49:10+01:00",
+    "lastSuccess": "2026-10-30T13:49:11+01:00",
     "stale": false,
     "status": "ok"
   },
   "weilerbach": {
     "eventCount": 24,
-    "lastAttempt": "2026-10-30T06:42:42+01:00",
-    "lastSuccess": "2026-10-30T06:42:52+01:00",
+    "lastAttempt": "2026-10-30T13:49:18+01:00",
+    "lastSuccess": "2026-10-30T13:49:25+01:00",
     "stale": false,
     "status": "ok"
   }
