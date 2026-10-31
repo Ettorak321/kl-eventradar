@@ -63,3 +63,7 @@ Gesetzliche Feiertage beruhen auf der Liste des Ministeriums des Innern und für
 Bewegliche Feiertage basieren auf dem gregorianischen Ostertermin, Muttertag auf dem zweiten Sonntag im Mai. Schulferien, ortsspezifische Feste und nicht verifizierte Veranstaltungsreihen werden dadurch nicht automatisch erzeugt. Keine Aussagen über Besucherzahlen oder wirtschaftliche Auswirkungen.
 
 Weitere feste oder regelbasierte Kalendertage: Black Friday (Freitag nach dem vierten Donnerstag im November) sowie die vier Adventssonntage. Diese sind keine gesetzlichen Feiertage. Der Statusfilter „Nur veröffentlichte Veranstaltungen“ blendet berechnete Kalendertage ebenso aus wie Kerwe-Vorschauen.
+
+## Helligkeitssteuerung (V9)
+
+Über **◐ Helligkeit** oben im Kalender öffnet sich ein Regler mit fünf Abstufungen (70 %, 85 %, 100 %, 115 %, 130 %). **100 % ist die unveränderte bisherige dunkle Standarddarstellung.** Die Schaltfläche „Standard wiederherstellen“ stellt diesen Zustand wieder her. Die Auswahl wird nur lokal im jeweiligen Browser gespeichert und verändert weder Kalenderdaten noch Veranstaltungsfarben. Die Steuerung ist per Tastatur zugänglich und lässt sich mit Escape schließen.
