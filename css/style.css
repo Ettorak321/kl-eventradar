@@ -45,3 +45,70 @@
 /* V8: Wiederkehrende Kalendertage sind als eigene Kategorie erkennbar. */
 .fc .fc-event.kl-calendar-day{border-style:solid!important;border-left-width:4px!important}
 .fc .fc-event.kl-calendar-day .kl-type-chip{background:#0008}
+
+
+/* V9: Fünf Helligkeitsstufen, 100 % = exakt die bisherige Darstellung. */
+:root[data-kl-brightness="70"] {
+  --bg:#07090d;--panel:#10131a;--panel2:#191d27;--text:#d9dde5;--muted:#979eab;--line:#252a35;
+  --kl-head-a:#18151c;--kl-head-b:#07090d;--kl-bar:#0c0f15;--kl-field:#080a10;--kl-picker:#151a24;--kl-pop:#121720;
+}
+:root[data-kl-brightness="85"] {
+  --bg:#0b0d13;--panel:#151923;--panel2:#1d2330;--text:#e1e5eb;--muted:#a0a8b6;--line:#2b303e;
+  --kl-head-a:#201d27;--kl-head-b:#0b0d13;--kl-bar:#12151d;--kl-field:#0b0e15;--kl-picker:#202633;--kl-pop:#1b202c;
+}
+:root[data-kl-brightness="115"] {
+  --bg:#1d222e;--panel:#2b3240;--panel2:#374052;--text:#f5f7fb;--muted:#c9d2df;--line:#536075;
+  --kl-head-a:#343440;--kl-head-b:#202633;--kl-bar:#262c3a;--kl-field:#252b38;--kl-picker:#303949;--kl-pop:#354053;
+}
+:root[data-kl-brightness="130"] {
+  --bg:#303847;--panel:#414c5d;--panel2:#536075;--text:#fff;--muted:#e0e7f2;--line:#76849a;
+  --kl-head-a:#50576a;--kl-head-b:#353f51;--kl-bar:#394354;--kl-field:#374253;--kl-picker:#475369;--kl-pop:#48566d;
+}
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .app-header {
+  background:linear-gradient(125deg,var(--kl-head-a),var(--kl-head-b));
+}
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .filter-bar {
+  background:var(--kl-bar);
+}
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .filter-bar input[type=search],
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .filter-bar select,
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .modal form input,
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .modal form select,
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .modal form textarea {
+  background:var(--kl-field);color:var(--text);border-color:var(--line);
+}
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .category-picker>summary,
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .filter-count {
+  background:var(--kl-picker);color:var(--text);
+}
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .category-panel,
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .mini-button {
+  background:var(--kl-pop);color:var(--text);border-color:var(--line);
+}
+:root[data-kl-brightness]:not([data-kl-brightness="100"]) .fc {
+  --fc-neutral-bg-color:var(--panel2);
+  --fc-button-bg-color:var(--panel2);
+  --fc-button-border-color:var(--line);
+  --fc-button-hover-bg-color:var(--panel);
+}
+/* Die Kalender-Eventfarben bleiben in jeder Helligkeitsstufe unverändert. */
+.brightness-control{position:relative;flex:0 0 auto}
+.brightness-control>#btn-brightness{white-space:nowrap}
+.brightness-panel{
+  position:absolute;z-index:70;right:0;top:calc(100% + 9px);
+  width:min(315px,calc(100vw - 30px));background:var(--panel);
+  border:1px solid var(--line);border-radius:12px;padding:17px;
+  color:var(--text);box-shadow:0 12px 32px #0009;
+}
+.brightness-label,.brightness-ends{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.brightness-label{font-size:12px;font-weight:700}
+#brightness-value{white-space:nowrap;color:var(--muted);font-weight:600}
+#brightness-range{width:100%;margin:16px 0 7px;accent-color:var(--accent);cursor:pointer}
+.brightness-ends{font-size:11px;color:var(--muted)}
+.brightness-reset{margin-top:16px;width:100%}
+.brightness-hint{color:var(--muted);font-size:11px;line-height:1.5;margin:10px 0 0}
+@media(max-width:520px){
+  .brightness-control{width:100%}
+  .brightness-control>#btn-brightness{width:100%}
+  .brightness-panel{right:auto;left:0;width:min(315px,calc(100vw - 30px))}
+}

@@ -11,12 +11,22 @@
   <script defer src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales-all.global.min.js"></script>
   <script defer src="js/ics.js"></script>
   <script defer src="js/taxonomy.js"></script>
+  <script defer src="js/brightness.js"></script>
   <script defer src="js/app.js"></script>
 </head>
 <body>
 <header class="app-header">
   <div><p class="eyebrow">STADT & LANDKREIS KAISERSLAUTERN · VERANSTALTUNGSÜBERSICHT</p><h1><span class="red-dot"></span> KL EventRadar</h1><p class="subtitle">FCK-Heim- und Auswärtsspiele · Kerwen · Feste · Feiertage · Konzerte in Stadt & Landkreis</p></div>
-  <div class="header-actions"><div id="sync-info" role="status">Datenstand wird geladen …</div><button class="btn btn-outline" id="btn-refresh" type="button">↻ Datenstand prüfen</button><a class="btn btn-outline" id="btn-fetch-sources" href="https://github.com/Ettorak321/kl-eventradar/actions/workflows/update-events.yml" target="_blank" rel="noopener noreferrer">Quellenabruf starten ↗</a></div>
+  <div class="header-actions"><div class="brightness-control" id="brightness-control">
+    <button class="btn btn-outline" id="btn-brightness" type="button" aria-controls="brightness-panel" aria-expanded="false" aria-label="Helligkeit einstellen">◐ Helligkeit: Standard</button>
+    <div class="brightness-panel hidden" id="brightness-panel" role="group" aria-label="Helligkeit des Kalenders">
+      <div class="brightness-label"><label for="brightness-range">Bildschirmdarstellung</label><output for="brightness-range" id="brightness-value">100 % · Standard</output></div>
+      <input id="brightness-range" type="range" min="70" max="130" step="15" value="100" aria-label="Kalenderhelligkeit" aria-valuetext="100 Prozent, Standard">
+      <div class="brightness-ends"><span>☾ Dunkler</span><span>☀ Heller</span></div>
+      <button class="btn btn-outline btn-sm brightness-reset" id="brightness-reset" type="button">↺ Standard wiederherstellen</button>
+      <p class="brightness-hint">100 % entspricht genau der bisherigen Darstellung. Die Auswahl bleibt in diesem Browser gespeichert.</p>
+    </div>
+  </div><div id="sync-info" role="status">Datenstand wird geladen …</div><button class="btn btn-outline" id="btn-refresh" type="button">↻ Datenstand prüfen</button><a class="btn btn-outline" id="btn-fetch-sources" href="https://github.com/Ettorak321/kl-eventradar/actions/workflows/update-events.yml" target="_blank" rel="noopener noreferrer">Quellenabruf starten ↗</a></div>
 </header>
 <div id="alert-banner" class="alert-banner hidden" role="alert"></div>
 <nav class="filter-bar" aria-label="Kalenderfilter">
