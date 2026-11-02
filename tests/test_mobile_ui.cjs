@@ -37,7 +37,7 @@ test('mobil ist die kompakte Ansicht standardmäßig an, aber abschaltbar',()=>{
 });
 test('Tab-Icon, iPhone-Icon, Android-Manifest und mobile Darstellung sind eingebunden',()=>{
   const html=read('index.html'),app=read('js/app.js'),css=read('css/style.css');
-  for(const file of ['favicon.svg','favicon-32.png','apple-touch-icon.png',,'site.webmanifest'])
+  for(const file of ['favicon.svg','favicon-32.png' ,'apple-touch-icon.png','site.webmanifest'])
     assert.ok(fs.existsSync(path.join(__dirname,'..',file)),file);
   assert.match(html,/rel="icon"/);assert.match(html,/rel="apple-touch-icon"/);
   assert.match(html,/rel="manifest"/);assert.match(html,/src="js\/mobile_ui\.js"/);
