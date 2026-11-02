@@ -1,7 +1,8 @@
 (() => {
  'use strict';
  const TAX=window.KLTypes;
- if (!TAX) throw new Error('Die Veranstaltungstypen-Bibliothek wurde nicht geladen');
+ const MOBILE=window.KLMobile;
+ if (!TAX || !MOBILE) throw new Error('Die Kalender- oder Symbolbibliothek wurde nicht geladen');
  const DEFAULT_SELECTED = TAX.defaultSelected();
  let selectedKinds = new Set(DEFAULT_SELECTED);
  const NAMES={fck:'FCK-Profis',city:'Stadt Kaiserslautern',sommerswing:'Sommerswing',rlp:'OpenData Rheinland-Pfalz',ramstein:'VG Ramstein-Miesenbach',pfalz:'Pfalz Touristik (Landkreis)',weilerbach:'VG Weilerbach / Amtsblatt',kerwe_forecast:'Kerwe-Vorschau aus Vorjahren',calendar_days:'Berechnete Feiertage & Anlässe'};
@@ -66,7 +67,7 @@
  function toFCEvent(ev){return {
    id:ev.id,title:ev.title,start:ev.start,end:ev.end||undefined,allDay:ev.allDay,
    backgroundColor:ev.displayColor,borderColor:ev.displayColor,textColor:'#fff',
-   classNames:['kl-event-card',...(ev.forecast?['kl-forecast']:[]),...(ev.isAnnualDay?['kl-calendar-day']:[])],extendedProps:{payload:ev}
+   classNames:['kl-event-card',...(ev.forecast?['kl-forecast']:[]),...(ev.isAnnualDay?['kl-calendar-day']:[]),...(ev.isSeries?['kl-series']:[])],extendedProps:{payload:ev}
  };}
  function applyFilters(){
   const q=E.search.value.trim().toLocaleLowerCase('de');
@@ -117,10 +118,14 @@
    eventContent:info=>{
     const ev=info.event.extendedProps.payload||{};
     const type=node('span',{class:'kl-type-chip',text:ev.displayLabel||eventType(ev)});
-    const title=node('span',{class:'kl-event-name',text:info.event.title});const forecast=ev.forecast?node('span',{class:'kl-forecast-tag',text:'Prognose'}):null;
+    const title=node('span',{class:'kl-event-name',text:info.event.title});
+    const icon=node('span',{class:'kl-mobile-icon',text:MOBILE.iconFor(ev)});
+    icon.setAttribute('aria-hidden','true');
+    const short=node('span',{class:'kl-mobile-short',text:MOBILE.shortLabel(ev)});
+    const forecast=ev.forecast?node('span',{class:'kl-forecast-tag',text:'Prognose'}):null;
     const region=node('span',{class:'region-dot','data-region':ev.region});
     region.style.background=regionColor(ev);
-    return {domNodes:[node('span',{class:'kl-calendar-event'},[type,...(forecast?[forecast]:[]),title,region])]};
+    return {domNodes:[node('span',{class:'kl-calendar-event'},[icon,type,...(forecast?[forecast]:[]),title,short,region])]};
    },
    eventDidMount:info=>{
     const ev=info.event.extendedProps.payload||{};
@@ -134,9 +139,10 @@
       info.el.style.setProperty('color','#fff','important');
     }
     info.el.title=`${ev.displayLabel||eventType(ev)} · ${areaName(ev)} · Quelle: ${NAMES[ev.sourceKey]||ev.sourceKey||'privat'} · ${info.event.title}`;
+    info.el.setAttribute('aria-label',`${ev.displayLabel||eventType(ev)}: ${info.event.title}${ev.forecast?' (Prognose)':''}`);
    },
    headerToolbar:{left:'prev,next today',center:'title',right:''},buttonText:{today:'Heute'},
-   height:'auto',dayMaxEvents:5,initialDate:new Date(),
+   height:'auto',dayMaxEvents:window.matchMedia('(max-width:640px)').matches?4:5,initialDate:new Date(),
    // FCK und Kerwen sollen bei vollen Tagen vor Kultur und sonstigen Events erscheinen.
    eventOrder:(a,b)=>{
     const rank={fussball:0,fck_auswaerts:1,feiertag:2,anlass:3,kerwe:4,stadtfest:5,konzert:6,sport:7,markt:8,ausstellung:9,museum:10,kultur:11,sonstiges:12};
@@ -145,6 +151,9 @@
    },eventOrderStrict:true,
    eventClick:info=>{info.jsEvent.preventDefault();showEvent(info.event.extendedProps.payload);}
   });calendar.render();applyFilters();
+  // Auf Tablets und Smartphones werden volle Kalendertage automatisch dichter dargestellt.
+  const mobileQuery=window.matchMedia('(max-width:640px)');
+  if(mobileQuery.addEventListener)mobileQuery.addEventListener('change',()=>calendar.setOption('dayMaxEvents',mobileQuery.matches?4:5));
  }
  function saveICS(){if(!window.KLICS)return;try{const content=window.KLICS.exportEvents(filteredEvents);const url=URL.createObjectURL(new Blob([content],{type:'text/calendar;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='kl-eventradar.ics';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(err){E.alert.textContent=`ICS-Export fehlgeschlagen: ${err.message}`;E.alert.classList.remove('hidden');}}
  E.form.addEventListener('submit',saveEvent);E.customDelete.addEventListener('click',()=>{const id=E.customId.value;if(!id||!confirm('Eigenen Termin wirklich löschen?'))return;customEvents=customEvents.filter(e=>e.id!==id);storeCustom();closeModal(E.customModal);fillLocations();applyFilters();});$('btn-add-custom').addEventListener('click',()=>openCustom());$('btn-export-ics').addEventListener('click',saveICS);$('btn-refresh').addEventListener('click',loadData);
@@ -167,14 +176,14 @@
  document.querySelectorAll('.modal-close').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.closest('.modal'))));document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m);}));document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal:not(.hidden)').forEach(closeModal);});
  function updateLegendCounts(){const total=localEvents();for(const line of E.legend.children){const id=line.dataset.region;const number=total.filter(ev=>ev.region===id).length;const count=line.querySelector('.legend-count');if(count)count.textContent=`${number} erfasst`;}}
  for(const type of TAX.TYPES){
-  const line=node('div',{class:'type-legend-item'},[node('span',{class:'legend-swatch'}),node('span',{text:type.name})]);
+  const line=node('div',{class:'type-legend-item'},[node('span',{class:'legend-swatch'}),node('span',{class:'kl-legend-icon',text:MOBILE.iconFor({displayCategory:type.id})}),node('span',{text:type.name})]);
   line.querySelector('.legend-swatch').style.background=type.color;E.typeLegend.append(line);
  }
  for(const type of TAX.TYPES){
   const label=node('label',{class:'category-check'});
   const check=node('input',{type:'checkbox',value:type.id});check.value=type.id;check.checked=selectedKinds.has(type.id);
   const dot=node('span',{class:'legend-swatch'});dot.style.background=type.color;
-  label.append(check,dot,node('span',{text:type.name}));E.categoryChoices.append(label);
+  label.append(check,dot,node('span',{class:'kl-legend-icon',text:MOBILE.iconFor({displayCategory:type.id})}),node('span',{text:type.name}));E.categoryChoices.append(label);
   check.addEventListener('change',()=>{if(check.checked)selectedKinds.add(type.id);else selectedKinds.delete(type.id);storeSelection();updateChoices();applyFilters();});
  }
  $('categories-all').addEventListener('click',()=>changeSelection(TAX.TYPES.map(t=>t.id)));
@@ -185,5 +194,6 @@
    const line=node('div',{class:'region-legend-item'},[node('span',{class:'legend-swatch'}),node('span',{text:name}),node('span',{class:'legend-count',text:'–'})]);line.dataset.region=id;
    line.querySelector('.legend-swatch').style.background=color;E.legend.append(line);
  }
+ MOBILE.initToggle(document,window.localStorage);
  loadCustom();initCalendar();loadData();
 })();

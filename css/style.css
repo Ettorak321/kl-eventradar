@@ -112,3 +112,40 @@
   .brightness-control>#btn-brightness{width:100%}
   .brightness-panel{right:auto;left:0;width:min(315px,calc(100vw - 30px))}
 }
+
+
+/* V12: Responsive Symbolansicht – komplette Titel bleiben im Dialog und der Listenansicht. */
+.kl-mobile-icon,.kl-mobile-short,.kl-legend-icon,.mobile-density-toggle{display:none}
+@media(max-width:640px){
+ .mobile-density-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:36px;white-space:nowrap}
+ .fc .fc-daygrid-event{min-width:0}
+ .fc .fc-daygrid-event .kl-calendar-event{gap:2px;min-height:17px;max-width:100%;justify-content:center}
+ .fc .fc-daygrid-event .kl-type-chip,
+ .fc .fc-daygrid-event .kl-event-name,
+ .fc .fc-daygrid-event .region-dot,
+ .fc .fc-daygrid-event .kl-forecast-tag{display:none}
+ .fc .fc-daygrid-event .kl-mobile-icon{display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:18px;letter-spacing:-1px;flex:0 0 auto}
+ .fc .fc-daygrid-event .kl-mobile-short{display:inline;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;line-height:18px}
+ .fc .fc-daygrid-event .kl-series .kl-calendar-event{justify-content:flex-start}
+ .fc .fc-daygrid-event.kl-series .kl-calendar-event{justify-content:flex-start}
+ .fc .fc-list-event .kl-mobile-icon{display:inline-flex;align-items:center;margin-right:5px}
+ .fc .fc-list-event .kl-mobile-short{display:none}
+ .fc .fc-list-event .kl-type-chip,.fc .fc-list-event .kl-event-name{display:inline}
+ .type-legend-item .kl-legend-icon,.category-check .kl-legend-icon{display:inline-block;width:20px;text-align:center}
+ /* Textmodus reproduziert die bisherige mobile Darstellung. */
+ html.kl-mobile-standard .fc .fc-daygrid-event .kl-mobile-icon,
+ html.kl-mobile-standard .fc .fc-daygrid-event .kl-mobile-short{display:none}
+ html.kl-mobile-standard .fc .fc-daygrid-event .kl-type-chip,
+ html.kl-mobile-standard .fc .fc-daygrid-event .kl-event-name,
+ html.kl-mobile-standard .fc .fc-daygrid-event .region-dot,
+ html.kl-mobile-standard .fc .fc-daygrid-event .kl-forecast-tag{display:inline}
+ html.kl-mobile-standard .fc .fc-daygrid-event .kl-calendar-event{justify-content:flex-start;gap:5px}
+}
+@media(max-width:460px){
+ .fc .fc-daygrid-event:not(.kl-series) .kl-mobile-short{display:none}
+ .fc .fc-daygrid-event .kl-calendar-event{min-height:20px}
+ .fc .fc-daygrid-event .kl-mobile-icon{font-size:15px}
+ .fc .fc-daygrid-event.kl-series .kl-mobile-short{display:inline}
+ .fc .fc-daygrid-day-frame{min-width:0}
+ html.kl-mobile-standard .fc .fc-daygrid-event .kl-mobile-short{display:none}
+}

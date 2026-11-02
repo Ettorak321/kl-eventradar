@@ -81,3 +81,22 @@ Der Lautrer Weihnachtsmarkt 2026 hat nach aktuellem Kalenderstand eine Unterbrec
 Manche Ausstellungen werden in der städtischen Quelle als tägliche Einzeltermine ohne den Wortbestandteil „Ausstellung“ eingetragen. V11 erkennt bei den geprüften Spielstätten **Museum Pfalzgalerie Kaiserslautern** und **Stadtmuseum Kaiserslautern** wiederholte, unmittelbar benachbarte Tage mit identischem Titel. Diese Einträge werden in der öffentlichen Anzeige als **Ausstellung** klassifiziert und unter Berücksichtigung tatsächlicher Schließtage zu mehrtägigen Balken verbunden. Bei den überprüften Daten betrifft das unter anderem *Hans Purrmann als Sammler*, *Die Goldenen Zwanziger*, *Neues von PFAFF* und *Eileen Gray: Golden Girls No. 3*.
 
 Die Regeln sind konservativ: keine Zusammenfassung allein aufgrund ähnlicher Titel oder des Veranstaltungsortes. Einzelne Museumsführungen, Konzerte, Theater, Kurse, Mehrfachtermine am selben Tag sowie unterschiedliche Spielstätten oder Quellkennungen werden nicht als mehrtägige Ausstellung eingestuft. Die vollständigen ursprünglichen Tageszeiten und Quelllinks bleiben in den Einzeldatencaches und in der Detailansicht der erzeugten Balken erhalten. Die Kategorie **Ausstellungen** ist weiterhin standardmäßig deaktiviert, kann aber im Filter eingeschaltet werden. Das reduziert die grauen Sonstiges-Einträge auf dem Smartphone, ohne relevante Veranstaltungen anderer Kategorien auszublenden.
+
+## Smartphone-Symbolansicht und Website-Icon (V12)
+
+Auf Smartphones zeigt der Monatskalender standardmäßig farbige, kompakte Symbole
+für FCK-Heim- und Auswärtsspiele, Kerwen, Feste, Märkte, Konzerte, Feiertage
+und weitere Kategorien. Weihnachtsmärkte erhalten ein Tannensymbol.
+Zusammenhängende Veranstaltungsbalken behalten einen kurzen Titel.
+Beim Antippen öffnet sich weiterhin das vollständige Detailfenster, in der
+Listenansicht bleibt die volle Bezeichnung lesbar. Über **◧ Symbole** kann
+zwischen Symbol- und bisheriger Textansicht gewechselt werden; die Wahl wird
+nur in diesem Browser gespeichert. Ab 640 CSS-Pixeln arbeitet die kompakte
+Darstellung, auf breiteren Displays bleibt das bisherige Layout erhalten.
+
+**KL EventRadar** besitzt jetzt ein eigenes KL-Radar-Favicon als SVG plus
+PNG-Fallback für Browser-Lesezeichen, ein Apple-Touch-Icon und ein
+Web-App-Manifest für Startbildschirm-Verknüpfungen. Auf dem Smartphone
+kann die Website über die Browserfunktion *Zum Startbildschirm hinzufügen*
+mit eigenem Icon abgelegt werden. Bereits gespeicherte Lesezeichen können
+je nach Browser erst nach erneutem Öffnen oder Neuanlegen das Icon anzeigen.
