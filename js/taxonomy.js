@@ -26,6 +26,8 @@
     const t = String(ev?.title || '').toLocaleLowerCase('de');
     const s = String(ev?.sourceKey || '');
     if (s === 'calendar_days' && (ev?.category === 'feiertag' || ev?.category === 'anlass')) return ev.category;
+    // Der geprüfte Server-Abgleich erkennt Museumsreihen trotz neutralem Ausstellungstitel.
+    if (s === 'city' && ev?.exhibitionSeries === true && ev?.category === 'ausstellung') return 'ausstellung';
     if (s === 'fck' && ev?.isAway === true && ev?.isStadium !== true) return 'fck_auswaerts';
     if (s === 'fck' && ev?.isStadium === true && ev?.venueVerified === true) return 'fussball';
     if (/kerwe|kerb\b|kirchweih|kirmes/i.test(t)) return 'kerwe';

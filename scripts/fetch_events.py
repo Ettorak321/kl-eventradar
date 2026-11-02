@@ -24,6 +24,7 @@ try:
     from .event_taxonomy import classify_event, relabel
     from .kerwe_predictions import attach_forecasts
     from .event_series import collapse_adjacent_series
+    from .exhibition_series import annotate_exhibition_series
     from .special_days import attach_calendar_days
     from .regions import classify_region, REGIONS
     from .regional_sources import OPEN_RLP, RAMSTEIN, PFALZ, parse_rlp_json, parse_ramstein_html, parse_pfalz_jsonld, event_type, WITTICH_EDITION, weilerbach_article_links, parse_weilerbach_article
@@ -31,6 +32,7 @@ except ImportError:
     from event_taxonomy import classify_event, relabel
     from kerwe_predictions import attach_forecasts
     from event_series import collapse_adjacent_series
+    from exhibition_series import annotate_exhibition_series
     from special_days import attach_calendar_days
     from regions import classify_region, REGIONS
     from regional_sources import OPEN_RLP, RAMSTEIN, PFALZ, parse_rlp_json, parse_ramstein_html, parse_pfalz_jsonld, event_type, WITTICH_EDITION, weilerbach_article_links, parse_weilerbach_article
@@ -493,6 +495,8 @@ def update_sources(loaders, cache_dir=CACHE, data_dir=DATA):
             if not entry.get("lastSuccess") and previous.get("lastSuccess"):
                 entry["lastSuccess"] = previous["lastSuccess"]
     merged = [relabel(ev) for ev in dedupe_cross_sources(all_events)]
+    # Gleiche Öffnungstage in nachgewiesenen Museen können Ausstellungsreihen sein.
+    merged = annotate_exhibition_series(merged)
     # Historische Vorschauen gelten niemals als erfolgreicher Abruf einer Quelle.
     merged = attach_forecasts(merged, rules_path=data_dir / 'kerwe_rules.json')
     # Kalendertage sind berechnet und gelten nicht als erfolgreiche Quellenabrufe.
