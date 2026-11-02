@@ -1,0 +1,24 @@
+{
+  "name": "KL EventRadar",
+  "short_name": "EventRadar",
+  "description": "Veranstaltungskalender für Kaiserslautern und Landkreis",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#0f1117",
+  "theme_color": "#11141c",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
