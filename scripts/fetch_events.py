@@ -23,12 +23,14 @@ from bs4 import BeautifulSoup
 try:
     from .event_taxonomy import classify_event, relabel
     from .kerwe_predictions import attach_forecasts
+    from .event_series import collapse_adjacent_series
     from .special_days import attach_calendar_days
     from .regions import classify_region, REGIONS
     from .regional_sources import OPEN_RLP, RAMSTEIN, PFALZ, parse_rlp_json, parse_ramstein_html, parse_pfalz_jsonld, event_type, WITTICH_EDITION, weilerbach_article_links, parse_weilerbach_article
 except ImportError:
     from event_taxonomy import classify_event, relabel
     from kerwe_predictions import attach_forecasts
+    from event_series import collapse_adjacent_series
     from special_days import attach_calendar_days
     from regions import classify_region, REGIONS
     from regional_sources import OPEN_RLP, RAMSTEIN, PFALZ, parse_rlp_json, parse_ramstein_html, parse_pfalz_jsonld, event_type, WITTICH_EDITION, weilerbach_article_links, parse_weilerbach_article
@@ -495,6 +497,8 @@ def update_sources(loaders, cache_dir=CACHE, data_dir=DATA):
     merged = attach_forecasts(merged, rules_path=data_dir / 'kerwe_rules.json')
     # Kalendertage sind berechnet und gelten nicht als erfolgreiche Quellenabrufe.
     merged = attach_calendar_days(merged)
+    # Quellencaches behalten jeden Originaltag; nur der öffentliche Datenbestand wird kompakter.
+    merged = collapse_adjacent_series(merged)
     now = stamp()
     prior = read_json(data_dir / "events.json", {})
     # lastSuccessfulSync wird nur geändert, wenn wirklich mind. eine Quelle erfolgreich war.
@@ -502,6 +506,7 @@ def update_sources(loaders, cache_dir=CACHE, data_dir=DATA):
     output = {"generatedAt": now, "lastSuccessfulSync": success_time,
               "forecastCount": sum(1 for e in merged if e.get("forecast")),
               "calendarDayCount": sum(1 for e in merged if e.get("isAnnualDay")),
+              "seriesCount": sum(1 for e in merged if e.get("isSeries")),
               "sourceStatus": status, "eventCount": len(merged), "events": merged}
     atomic_json(data_dir / "events.json", output)
     atomic_json(stat_file, status)
