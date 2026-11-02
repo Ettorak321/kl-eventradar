@@ -1,4 +1,4 @@
-"""Identische tägliche Markt- oder Festtermine für die Kalenderanzeige bündeln.
+"""Identische tägliche Veranstaltungsreihen als mehrtägige Balken bündeln.
 
 Die täglichen Rohdaten bleiben in den Quellencaches unverändert. Es werden
 ausschließlich unmittelbar aufeinanderfolgende veröffentlichte Einträge
@@ -7,8 +7,22 @@ derselben Veranstaltung am selben Ort und aus derselben Quelle aggregiert.
 from collections import Counter, defaultdict
 from datetime import date, timedelta
 from hashlib import sha256
+import re
 
 SERIES_CATEGORIES = frozenset({"markt", "kerwe", "stadtfest", "ausstellung"})
+# Wiederkehrende Markt-/Ausstellungsreihen können von der Quelle als Kultur
+# oder Sonstiges eingestuft werden. Theater, Konzerte und Aufführungen bleiben
+# dagegen Einzeltermine mit eigener Uhrzeit/Ticketierung.
+SERIES_TITLE = re.compile(r"(?:markt|messe|ausstellung|kulturtage|festival)\b", re.I)
+
+
+def eligible_series(event):
+    category = event.get("category")
+    if category in SERIES_CATEGORIES:
+        return True
+    if category in ("kultur", "sonstiges"):
+        return bool(SERIES_TITLE.search(str(event.get("title") or "")))
+    return False
 
 
 def day_of(event):
@@ -34,7 +48,7 @@ def is_single_day(event):
 
 
 def key_for(event):
-    if (event.get("category") not in SERIES_CATEGORIES
+    if (not eligible_series(event)
             or event.get("status") != "confirmed"
             or event.get("isCustom") or event.get("isSeries")
             or event.get("forecast") or event.get("isAnnualDay")
