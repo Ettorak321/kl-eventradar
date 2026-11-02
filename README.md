@@ -67,3 +67,9 @@ Weitere feste oder regelbasierte Kalendertage: Black Friday (Freitag nach dem vi
 ## Helligkeitssteuerung (V9)
 
 Über **◐ Helligkeit** oben im Kalender öffnet sich ein Regler mit fünf Abstufungen (70 %, 85 %, 100 %, 115 %, 130 %). **100 % ist die unveränderte bisherige dunkle Standarddarstellung.** Die Schaltfläche „Standard wiederherstellen“ stellt diesen Zustand wieder her. Die Auswahl wird nur lokal im jeweiligen Browser gespeichert und verändert weder Kalenderdaten noch Veranstaltungsfarben. Die Steuerung ist per Tastatur zugänglich und lässt sich mit Escape schließen.
+
+## Zusammenhängende Markt- und Festtermine (V10)
+
+Wenn eine offizielle Quelle identische Tages-Einträge derselben Veranstaltung direkt hintereinander veröffentlicht, bündelt der öffentliche Kalender sie zu einem **durchgehenden mehrtägigen Balken**. Dazu müssen Titel, Ort, Datenquelle, Region, Kategorie und Programmtext übereinstimmen. Fehlende Kalendertage werden nicht überbrückt. Unterschiedliche Veranstaltungen, mehrere Termine am selben Tag, Konzerte und bereits mehrtägige Termine bleiben einzeln sichtbar. Die ursprünglichen Tageszeiten und Einzelquellen erscheinen im Detailfenster und bleiben im Quellen-Cache unverändert erhalten.
+
+Der Lautrer Weihnachtsmarkt 2026 hat nach aktuellem Kalenderstand eine Unterbrechung am **22. November**. Deshalb entstehen zwei getrennte Balken; für den fehlenden Tag wird keine Öffnung unterstellt. Kalenderwochen werden von FullCalendar automatisch zeilenweise dargestellt.
