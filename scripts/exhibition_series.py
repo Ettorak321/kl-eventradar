@@ -11,7 +11,10 @@ from __future__ import annotations
 import re
 from collections import Counter, defaultdict
 from datetime import timedelta
-from .event_series import day_of, is_single_day
+try:
+    from .event_series import day_of, is_single_day
+except ImportError:
+    from event_series import day_of, is_single_day
 
 # Die hier aufgeführten Veranstaltungsorte sind in der städtischen Datenquelle
 # als Museums-Spielstätten verifiziert. Weitere Orte nur nach Prüfung ergänzen.
