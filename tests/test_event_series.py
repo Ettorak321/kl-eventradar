@@ -36,6 +36,46 @@ class SeriesTests(unittest.TestCase):
         self.assertFalse(any(d["date"] == "2026-11-22" for x in combined for d in x["seriesDays"]))
         self.assertEqual(combined, collapse_adjacent_series(original))
 
+    def test_kulturmarkt_four_true_weekend_blocks(self):
+        """16 echte Tages-Pattern: 26.–29.11., 03.–06., 10.–13., 17.–20.12."""
+        blocks = [(date(2026, 11, 26), 4), (date(2026, 12, 3), 4),
+                  (date(2026, 12, 10), 4), (date(2026, 12, 17), 4)]
+        original = []
+        for day, count in blocks:
+            for idx in range(count):
+                when = day + timedelta(days=idx)
+                hour = "10:00:00" if idx == 2 else "12:00:00"
+                original.append(event(when, title="Kulturmarkt", category="kultur",
+                                      eventType="Kultur / Theater",
+                                      location="Fruchthalle",
+                                      start=when.isoformat()+"T"+hour+"+01:00"))
+        series = collapse_adjacent_series(original)
+        self.assertEqual(len(original), 16)
+        self.assertEqual(len(series), 4)
+        self.assertEqual(
+            [(s["start"], s["end"], s["seriesCount"]) for s in series],
+            [("2026-11-26", "2026-11-30", 4),
+             ("2026-12-03", "2026-12-07", 4),
+             ("2026-12-10", "2026-12-14", 4),
+             ("2026-12-17", "2026-12-21", 4)])
+        self.assertEqual(sum(len(s["seriesDays"]) for s in series), 16)
+        self.assertTrue(all("10:00:00" in s["seriesDays"][2]["start"] for s in series))
+        self.assertTrue(all(s["location"] == "Fruchthalle" for s in series))
+
+    def test_other_cultural_events_stay_separate(self):
+        d = date(2026, 12, 3)
+        theater = [event(d, title="Theateraufführung", category="kultur"),
+                   event(d+timedelta(days=1), title="Theateraufführung", category="kultur")]
+        self.assertEqual(collapse_adjacent_series(theater), theater)
+
+    def test_market_in_miscellaneous_category_is_recognized(self):
+        d=date(2026, 12, 3)
+        items=[event(d,title="Kulturmarkt",category="sonstiges"),
+               event(d+timedelta(days=1),title="Kulturmarkt",category="sonstiges")]
+        res=collapse_adjacent_series(items)
+        self.assertEqual(len(res),1)
+        self.assertEqual(res[0]["seriesCount"],2)
+
     def test_different_places_titles_and_sources_do_not_merge(self):
         base = date(2026, 12, 1)
         rows = [event(base), event(base+timedelta(days=1), location="Anderer Platz"),

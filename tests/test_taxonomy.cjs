@@ -38,3 +38,12 @@ test('RLP holidays and occasions remain distinct and selected by default',()=>{
  assert.notEqual(legal.displayColor,special.displayColor);
  assert.ok(T.defaultSelected().includes('feiertag'));assert.ok(T.defaultSelected().includes('anlass'));
 });
+
+test('Kulturmarkt und ähnliche Märkte sind Markt/Messe, auch bei alter Kulturkategorie',()=>{
+ for(const title of ['Kulturmarkt','Kunstmarkt Kaiserslautern','Adventsmarkt in Rodenbach','Ostermarkt']){
+  const result=T.decorate(ev(title,{category:'kultur'}));
+  assert.equal(result.displayCategory,'markt',title);
+  assert.ok(T.defaultSelected().includes(result.displayCategory));
+ }
+ assert.equal(T.classify(ev('Kulturmarkt', {isCustom:true,category:'kultur'})),'kultur');
+});

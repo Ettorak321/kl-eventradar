@@ -31,7 +31,7 @@ def classify_event(title, is_stadium=False, source_key=None):
         return 'sport'
     if re.search(r'konzert|musik|sommerswing|jazz|blues|livemusik|live-musik|bandabend|rocknacht|open.air', text):
         return 'konzert'
-    if re.search(r'\b(?:weihnachtsmarkt|flohmarkt|wochenmarkt|jahrmarkt|bauernmarkt|kunsthandwerkermarkt|markt|messe|basar)\b', text):
+    if re.search(r'\b(?:weihnachtsmarkt|kulturmarkt|kunstmarkt|ostermarkt|adventsmarkt|frühlingsmarkt|mittelaltermarkt|flohmarkt|wochenmarkt|jahrmarkt|bauernmarkt|kunsthandwerkermarkt|markt|messe|basar)\b', text):
         return 'markt'
     if re.search(r'stadtfest|altstadtfest|dorffest|straßenfest|strassenfest|vereinsfest|feuerwehrfest|sommerfest|volksfest|weinfest|bierfest|oktoberfest|brunnenfest|bürgerfest|buergerfest|festwochen|festumzug', text):
         return 'stadtfest'

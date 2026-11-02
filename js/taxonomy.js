@@ -38,7 +38,7 @@
     if (/museum|museumsnacht|museumsführung/i.test(t)) return 'museum';
     if (/sportfest|fußball|fussball|turnier|laufveranstaltung|marathon|radrennen|handball|volleyball|basketball|leichtathletik/i.test(t)) return 'sport';
     if (/konzert|musik|sommerswing|jazz|blues|livemusik|live-musik|bandabend|rocknacht|open.air/i.test(t)) return 'konzert';
-    if (/\b(?:weihnachtsmarkt|flohmarkt|wochenmarkt|jahrmarkt|bauernmarkt|kunsthandwerkermarkt|markt|messe|basar)\b/i.test(t)) return 'markt';
+    if (/\b(?:weihnachtsmarkt|kulturmarkt|kunstmarkt|ostermarkt|adventsmarkt|frühlingsmarkt|mittelaltermarkt|flohmarkt|wochenmarkt|jahrmarkt|bauernmarkt|kunsthandwerkermarkt|markt|messe|basar)\b/i.test(t)) return 'markt';
     if (/stadtfest|altstadtfest|dorffest|straßenfest|strassenfest|vereinsfest|feuerwehrfest|sommerfest|volksfest|weinfest|bierfest|oktoberfest|brunnenfest|bürgerfest|buergerfest|festwochen|festumzug/i.test(t)) return 'stadtfest';
     if (/theater|kabarett|lesung|vortrag|oper\b|ballett|tanztheater|kultur|kunstführung|bühne|schauspiel/i.test(t)) return 'kultur';
     return 'sonstiges';
