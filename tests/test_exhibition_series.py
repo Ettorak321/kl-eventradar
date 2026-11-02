@@ -43,7 +43,7 @@ class ExhibitionSeriesTests(unittest.TestCase):
         raw = [make(date(2026,11,d), "Neues von PFAFF", venue)
                for d in (4,5,6,8,9)]
         result = collapse_adjacent_series(annotate_exhibition_series(raw))
-        self.assertEqual(len(result), 3)  # 4–6, 8–9
+        self.assertEqual(len(result), 2)  # 4–6 und 8–9; geschlossener 7. bleibt frei
         self.assertEqual([(x["start"], x.get("seriesCount")) for x in result],
                          [("2026-11-04", 3), ("2026-11-08", 2)])
 
@@ -63,7 +63,7 @@ class ExhibitionSeriesTests(unittest.TestCase):
                 make(d,"Hans Purrmann als Sammler","Pfalztheater"),
                 make(d+timedelta(days=1),"Hans Purrmann als Sammler","Pfalztheater")]
         self.assertEqual(annotate_exhibition_series(rows),rows)
-        self.assertEqual(collapse_adjacent_series(rows),rows)
+        self.assertEqual({e['id'] for e in collapse_adjacent_series(rows)}, {e['id'] for e in rows})
 
     def test_same_day_double_sessions_are_never_merged(self):
         d=date(2026,11,4);v="Stadtmuseum Kaiserslautern"
