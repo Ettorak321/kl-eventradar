@@ -1,51 +1,50 @@
 {
   "city": {
-    "error": "Abruf fehlgeschlagen (https://www.kaiserslautern.de/tourismus_freizeit_kultur/veranstaltungen/index.html.de): 403 Client Error: Forbidden for url: https://www.kaiserslautern.de/tourismus_freizeit_kultur/veranstaltungen/index.html.de",
     "eventCount": 344,
-    "lastAttempt": "2026-11-19T08:18:48+01:00",
-    "lastSuccess": "2026-11-18T21:27:26+01:00",
-    "stale": true,
-    "status": "error"
+    "lastAttempt": "2026-11-19T21:30:14+01:00",
+    "lastSuccess": "2026-11-19T21:30:44+01:00",
+    "stale": false,
+    "status": "ok"
   },
   "fck": {
     "eventCount": 39,
-    "lastAttempt": "2026-11-19T08:18:45+01:00",
-    "lastSuccess": "2026-11-19T08:18:48+01:00",
+    "lastAttempt": "2026-11-19T21:30:10+01:00",
+    "lastSuccess": "2026-11-19T21:30:14+01:00",
     "stale": false,
     "status": "ok"
   },
   "pfalz": {
     "error": "Pfalz.de: keine strukturierten Event-Einträge gefunden",
     "eventCount": 0,
-    "lastAttempt": "2026-11-19T08:18:52+01:00",
+    "lastAttempt": "2026-11-19T21:30:50+01:00",
     "stale": true,
     "status": "error"
   },
   "ramstein": {
     "error": "Ramstein-HTML nicht erkannt oder keine verifizierbaren Termine",
     "eventCount": 0,
-    "lastAttempt": "2026-11-19T08:18:51+01:00",
+    "lastAttempt": "2026-11-19T21:30:48+01:00",
     "stale": true,
     "status": "error"
   },
   "rlp": {
     "eventCount": 6,
-    "lastAttempt": "2026-11-19T08:18:48+01:00",
-    "lastSuccess": "2026-11-19T08:18:51+01:00",
+    "lastAttempt": "2026-11-19T21:30:45+01:00",
+    "lastSuccess": "2026-11-19T21:30:48+01:00",
     "stale": false,
     "status": "ok"
   },
   "sommerswing": {
     "eventCount": 8,
-    "lastAttempt": "2026-11-19T08:18:48+01:00",
-    "lastSuccess": "2026-11-19T08:18:48+01:00",
+    "lastAttempt": "2026-11-19T21:30:44+01:00",
+    "lastSuccess": "2026-11-19T21:30:45+01:00",
     "stale": false,
     "status": "ok"
   },
   "weilerbach": {
     "eventCount": 24,
-    "lastAttempt": "2026-11-19T08:18:53+01:00",
-    "lastSuccess": "2026-11-19T08:18:57+01:00",
+    "lastAttempt": "2026-11-19T21:30:51+01:00",
+    "lastSuccess": "2026-11-19T21:31:01+01:00",
     "stale": false,
     "status": "ok"
   }
